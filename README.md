@@ -8,6 +8,10 @@
                                                                     
           SISTEMA DE GESTIÓN DE RESERVAS v1.0
 ============================================================
+      Integrantes
+-Sanet Correa Castaño
+-Cristian Escobar Taborda
+-Nicolas Peña ibarguen
 ------------------------------------------------------------
 Plataforma especializada en la optimización del flujo de 
 reservas hoteleras. Diseñada para ofrecer una experiencia 
