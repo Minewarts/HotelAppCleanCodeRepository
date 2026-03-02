@@ -3,11 +3,11 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from src.mi_app.exceptions import AppError
+from src.HotelApp.exceptions import AppError
 
-from src.mi_app.models import User
-from src.mi_app.services import UserService
-from src.mi_app.storage import JSONStorage
+from src.HotelApp.models import User
+from src.HotelApp.services import UserService
+from src.HotelApp.storage import JSONStorage
 
 app = typer.Typer()
 console = Console()

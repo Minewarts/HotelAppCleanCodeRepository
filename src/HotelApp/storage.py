@@ -26,30 +26,11 @@ class Storage(Protocol):
             
         
        
-    def save(self, users: List[User] , get_id , get_name) -> None:
+    def save(self, users: List[User]) -> None :
+        data = []
 
-        new_users = get_id,get_name
+        for user in users:
+            data.append(user.to_dict())
 
-        for user in users : 
-            if :
-                u
-    
-
-
-    
-class JSONStorage:
-    def __init__(self, filepath: Path):
-        self.filepath = filepath
-
-    def load(self) -> List[User]:
-        if not self.filepath.exists():
-            return []
-
-        with open(self.filepath, "r") as f:
-            data = json.load(f)
-
-        return [User(**item) for item in data]
-
-    def save(self, users: List[User]) -> None:
-        with open(self.filepath, "w") as f:
-            json.dump([user.__dict__ for user in users], f, indent=2)
+        with open(self.filepath, "w") as file:
+            json.dump(data, file, indent=2)

@@ -1,6 +1,6 @@
-from .models import User
+from .models import User, Room, Hotel
 from .storage import Storage
-from .storage import Room
+
 from .exceptions import (
     UserNotFoundError,
     UserAlreadyExistsError,
