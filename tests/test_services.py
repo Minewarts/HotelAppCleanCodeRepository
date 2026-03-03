@@ -1,65 +1,70 @@
 import pytest
-from pathlib import Path
-from src.HotelApp.models import User, Room
+from unittest.mock import MagicMock
 from src.HotelApp.services import UserService, HotelService
-from src.HotelApp.storage import JSONStorage
-from src.HotelApp.exceptions import UserNotFoundError, UserAlreadyExistsError
+from src.HotelApp.models import User
+from src.HotelApp.models import Room
 
 
 class TestUserService:
 
-    @pytest.fixture
-    def storage(self, tmp_path):
-        return JSONStorage(tmp_path / "users.json")
+    def test_create_user_calls_storage(self):
+        fake_storage = MagicMock()
+        service = UserService(fake_storage)
 
-    @pytest.fixture
-    def service(self, storage):
-        return UserService(storage)
+        service.create_user("1", "Juan", "juan@gmail.com")
 
-    def test_create_user(self, service):
-        user = User(user_id=1, name="Juan", email="juan@gmail.com")
-        service.create_user(user)
-        assert service.get_user(1).get_name() == "Juan"
+        fake_storage.save_user.assert_called_once()
 
-    def test_create_duplicate_user(self, service):
-        user = User(user_id=1, name="Juan", email="juan@gmail.com")
-        service.create_user(user)
-        with pytest.raises(UserAlreadyExistsError):
-            service.create_user(user)
+    def test_get_user_by_id(self):
+        fake_storage = MagicMock()
+        fake_user = User("1", "Juan", "juan@gmail.com")
+        fake_storage.get_user_by_id.return_value = fake_user
 
-    def test_get_nonexistent_user(self, service):
-        with pytest.raises(UserNotFoundError):
-            service.get_user(999)
+        service = UserService(fake_storage)
 
-    def test_delete_user(self, service):
-        user = User(user_id=1, name="Juan", email="juan@gmail.com")
-        service.create_user(user)
-        service.delete_user(1)
-        with pytest.raises(UserNotFoundError):
-            service.get_user(1)
+        result = service.get_user_by_id("1")
+
+        assert result == fake_user
+        fake_storage.get_user_by_id.assert_called_once_with("1")
+
+    def test_create_user_invalid_email(self):
+        fake_storage = MagicMock()
+        service = UserService(fake_storage)
+
+        with pytest.raises(ValueError):
+            service.create_user("1", "Juan", "correo_invalido")
 
 
 class TestHotelService:
 
-    @pytest.fixture
-    def storage(self, tmp_path):
-        # mejor nombre para el fichero (opcional)
-        return JSONStorage(tmp_path / "users.json")
+    def test_add_room_calls_storage(self):
+        fake_storage = MagicMock()
+        service = HotelService(fake_storage)
 
-    @pytest.fixture
-    def service(self, storage):
-        return HotelService(storage)
+        service.add_room("101", "Single")
 
-    def test_reserve_room(self, service, storage):
-        user = User(user_id=1, name="Juan", email="juan@gmail.com")
-        # Guardar el usuario en el storage para que HotelService lo encuentre
-        storage.save([user])
+        fake_storage.save_room.assert_called_once()
 
-        room = Room(room_number=101, room_type="Single")
-        # método corregido en el servicio: reserve_room
-        service.reserve_room(user, room)
-        assert room.get_status() == "occupied"
+    def test_get_room(self):
+        fake_storage = MagicMock()
+        fake_room = Room("101", "Single")
+        fake_storage.get_room_by_number.return_value = fake_room
 
-    def test_check_availability(self, service):
-        room = Room(room_number=101, room_type="Single")
-        assert service.check_availability(room) is True
+        service = HotelService(fake_storage)
+
+        result = service.get_room("101")
+
+        assert result == fake_room
+        fake_storage.get_room_by_number.assert_called_once_with("101")
+
+    def test_book_room(self):
+        fake_storage = MagicMock()
+        fake_room = Room("101", "Single")
+        fake_storage.get_room_by_number.return_value = fake_room
+
+        service = HotelService(fake_storage)
+
+        service.book_room("101")
+
+        assert fake_room.is_reserved is True
+        fake_storage.save_room.assert_called()
