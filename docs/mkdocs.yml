@@ -1,0 +1,12 @@
+site_name: HotelApp Documentation
+site_description: Documentation for the HotelApp project.
+site_author: Cristian, Sanet Correa, Nicolas Peña
+
+theme:
+  name: material
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - API Reference: api.md
+

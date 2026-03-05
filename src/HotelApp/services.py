@@ -11,6 +11,12 @@ from .exceptions import (
 
 
 class UserService:
+
+    """
+    The UserService class is responsible for creating, getting , and deleting users. 
+    This class validates the user and, if they don't have an account, creates a new one and returns the value `user`.
+    Otherwise, it  return  the user's name and ID and returns that value."""
+
     def __init__(self, storage: Storage):
         self.storage = storage
 
