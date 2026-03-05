@@ -21,6 +21,16 @@ class UserService:
         self.storage = storage
 
     def create_user(self, user: User) -> None:
+        """
+        This method create a User 
+
+        args : user, this arg identify the user and save the variable generating a id >= 0 and a email.
+
+        raises : 
+        - InvalidUserDataError : The User id must be a number greater than zero. 
+        - InvalidUserDataError : The user cannot leave the User empty.
+        - InvalidUserDataError : The user must have the special character "@" in the email address. 
+        """
         # validaciones ya hechas parcialmente en User, pero volvemos a validar
         if user.get_id() <= 0:
             raise InvalidUserDataError("User id must be a positive integer")
@@ -41,6 +51,7 @@ class UserService:
         self.storage.save(users)
 
     def get_user(self, user_id: int) -> User:
+       
         users: List[User] = self.storage.load()
         for user in users:
             if user.get_id() == user_id:
