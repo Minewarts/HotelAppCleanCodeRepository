@@ -1,6 +1,6 @@
 site_name: HotelApp Clean Code Repository
 site_description: Documentación del repositorio de código limpio de HotelApp.
-site_authors: Alberto Escobar Taborda, Sanet Correa Castaño, Nicolas Peña
+site_author: Alberto Escobar Taborda, Sanet Correa Castaño, Nicolas Peña
 
 theme:
   name: material
