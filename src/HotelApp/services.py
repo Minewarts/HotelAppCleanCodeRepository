@@ -11,6 +11,7 @@ from .exceptions import (
 
 
 class UserService:
+    '''Service responsible for managing user-related operations'''
     def __init__(self, storage: Storage):
         self.storage = storage
 
@@ -35,6 +36,16 @@ class UserService:
         self.storage.save(users)
 
     def get_user(self, user_id: int) -> User:
+        '''
+        This method get the user
+
+        Args: user_id for identify the user who are you loking for
+
+        Raises:
+        - UserNotFoundError: It going to raise if the id of the User isnt found
+
+        Returns: Object called User 
+        '''
         users: List[User] = self.storage.load()
         for user in users:
             if user.get_id() == user_id:
@@ -42,6 +53,16 @@ class UserService:
         raise UserNotFoundError(f"User {user_id} not found")
 
     def delete_user(self, user_id: int) -> None:
+        '''
+        This method delete theh user from the storage
+
+        Args ☆*: .｡. o(≧▽≦)o .｡.:*☆: used_id for identify the user tha you are looking for
+
+        Raises 🚨: 
+        - UserNotFoundError: it raises if the user isnt found in the storage
+
+        Return ✈️: Nothing
+        '''
         users: List[User] = self.storage.load()
         filtered = [u for u in users if u.get_id() != user_id]
 
@@ -53,12 +74,10 @@ class UserService:
 
 class HotelService:
     def __init__(self, storage: Storage):
-        # storage aquí solo persiste usuarios (según tu diseño). Si quieres persistir hoteles/habitaciones,
-        # necesitarás un storage separado o extender Storage.
         self.storage = storage
 
     def reserve_room(self, user: User, room: Room) -> None:
-        # Verificamos disponibilidad
+        # Verificamos disponibilidad vida hjpta 😊
         if room.get_status() != "available":
             raise Exception("Room is not available")
 
