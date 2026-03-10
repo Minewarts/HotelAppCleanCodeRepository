@@ -11,16 +11,17 @@ from .exceptions import (
 
 
 class UserService:
-<<<<<<< HEAD
-    '''Service responsible for managing user-related operations'''
-=======
 
     """
+    Service responsible for managing user-related operations
+
+
     The UserService class is responsible for creating, getting , and deleting users. 
     This class validates the user and, if they don't have an account, creates a new one and returns the value `user`.
-    Otherwise, it  return  the user's name and ID and returns that value."""
+    Otherwise, it  return  the user's name and ID and returns that value.
+    
+    """
 
->>>>>>> ac65f6f6295a4f72647dfae81fbf84b4ee1d1b22
     def __init__(self, storage: Storage):
         self.storage = storage
 
@@ -55,7 +56,7 @@ class UserService:
         self.storage.save(users)
 
     def get_user(self, user_id: int) -> User:
-<<<<<<< HEAD
+
         '''
         This method get the user
 
@@ -66,9 +67,7 @@ class UserService:
 
         Returns: Object called User 
         '''
-=======
-       
->>>>>>> ac65f6f6295a4f72647dfae81fbf84b4ee1d1b22
+
         users: List[User] = self.storage.load()
         for user in users:
             if user.get_id() == user_id:
@@ -96,16 +95,15 @@ class UserService:
 
 
 class HotelService:
+   
    """
    The class HotelService is the responsable to : 
    - Reserve a room 
    - Cancel a pending reservation 
    - Check the disponibility of a room 
    - Show the room user history ( you can look the status and the tenant . ) 
-
-
    """
-
+   
     def __init__(self, storage: Storage):
         self.storage = storage
 
