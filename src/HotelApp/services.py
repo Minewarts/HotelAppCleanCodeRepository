@@ -95,15 +95,14 @@ class UserService:
 
 
 class HotelService:
-   
-   """
-   The class HotelService is the responsable to : 
-   - Reserve a room 
-   - Cancel a pending reservation 
-   - Check the disponibility of a room 
-   - Show the room user history ( you can look the status and the tenant . ) 
-   """
-   
+    """
+    The class HotelService is the responsable to : 
+    - Reserve a room 
+    - Cancel a pending reservation 
+    - Check the disponibility of a room 
+    - Show the room user history ( you can look the status and the tenant . ) 
+    """
+    
     def __init__(self, storage: Storage):
         self.storage = storage
 
