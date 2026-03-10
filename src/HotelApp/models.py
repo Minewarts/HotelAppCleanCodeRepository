@@ -4,6 +4,9 @@ from .exceptions import InvalidUserDataError
 
 
 class User:
+    """
+    
+    """
     def __init__(self, user_id: int, name: str, email: str):
         self._validate_id(user_id)
         self._validate_email(email)
