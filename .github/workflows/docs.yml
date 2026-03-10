@@ -1,8 +1,8 @@
-name: Deploy Docs
+name: ci 
 on:
   push:
     branches:
-      - main
+      - main # O tu rama principal
 
 permissions:
   contents: write
@@ -11,18 +11,18 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.14'
-      
-      - name: install dependencies
-        run: |
-          uv add mkdocs-material mkdocs mkdocstrings[python]
+      - uses: actions/checkout@v4
 
-      - name: Deply Documentation
-        run: |
-          uv run mkdocs gh-deploy --force
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Deploy to GitHub Pages
+        run: uv run mkdocs gh-deploy --force
