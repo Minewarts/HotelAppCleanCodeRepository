@@ -1,12 +1,45 @@
-site_name: HotelApp Documentation
-site_description: Documentation for the HotelApp project.
-site_author: Cristian, Sanet Correa, Nicolas Peña
+site_name: HotelApp Clean Code Repository
+site_description: Documentación del repositorio de código limpio de HotelApp.
+site_authors: Alberto Escobar Taborda, Sanet Correa Castaño, Nicolas Peña
 
 theme:
   name: material
+  palette:
+    - scheme: default
+      primary: #4E0082
+      accent: #4E0082
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: #4E0082
+      accent: #4E0082
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+plugins:
+  - search:
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: ["src"]
 
 nav:
-  - Home: index.md
-  - Getting Started: getting-started.md
-  - API Reference: api.md
+  - Inicio: index.md
+  - Guía de usuario: guia_usuario.md
+  - Referencia técnica:
+    - API de python: referencia/api.md
 
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
