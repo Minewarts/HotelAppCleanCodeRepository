@@ -10,7 +10,7 @@ from .exceptions import (
 )
 
 
-class UserService:
+class UserServices:
 
     """
     Service responsible for managing user-related operations
