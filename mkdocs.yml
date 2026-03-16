@@ -6,14 +6,14 @@ theme:
   name: material
   palette:
     - scheme: default
-      primary: #4E0082
-      accent: #4E0082
+      primary: indigo
+      accent: indigo
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
-    - scheme: slate
-      primary: #4E0082
-      accent: #4E0082
+    - scheme: slate # modo oscuro
+      primary: indigo
+      accent: indigo
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
@@ -27,9 +27,9 @@ plugins:
 
 nav:
   - Inicio: index.md
-  - Guía de usuario: guia_usuario.md
+  - Guía de usuario: getting-started.md
   - Referencia técnica:
-    - API de python: referencia/api.md
+    - API de python: api.md
 
 markdown_extensions:
   - admonition
@@ -42,4 +42,3 @@ markdown_extensions:
   - pymdownx.tabbed
   - pymdownx.highlight
   - pymdownx.inlinehilite
-  - pymdownx.snippets
