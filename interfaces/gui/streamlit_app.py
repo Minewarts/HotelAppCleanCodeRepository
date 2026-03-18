@@ -1,5 +1,4 @@
 import streamlit as st
-
 from HotelApp.services import UserService
 from HotelApp.storage import JSONStorage
 

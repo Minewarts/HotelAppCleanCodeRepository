@@ -6,18 +6,59 @@ from .models import User, Room
 
 
 class Storage(Protocol):
+    """
+    Protocol that defines the interface for a storage system.
+
+    Any class implementing this protocol must provide methods to
+    load and save a list of users.
+    """
+
     def load(self) -> List[User]:
+        """
+        Loads users from the storage system.
+
+        Returns:
+            List[User]: A list of User objects retrieved from storage.
+        """
         ...
 
     def save(self, users: List[User]) -> None:
+        """
+        Saves a list of users to the storage system.
+
+        Args:
+            users (List[User]): The list of users to be saved.
+        """
         ...
 
 
 class JSONStorage:
+    """
+    Storage implementation that persists user data in a JSON file.
+    """
+
     def __init__(self, filepath: Path):
+        """
+        Initializes the JSON storage with a file path.
+
+        Args:
+            filepath (Path): Path to the JSON file used for storage.
+        """
         self.filepath = filepath
 
     def load(self) -> List[User]:
+        """
+        Loads users from a JSON file.
+
+        If the file does not exist, an empty list is returned. The method
+        reconstructs User and Room objects from the stored JSON data.
+
+        Returns:
+            List[User]: A list of reconstructed User objects.
+
+        Raises:
+            Exception: If there is an error reading or parsing the JSON file.
+        """
         # Si el archivo no existe, devolvemos una lista vacía
         if not self.filepath.exists():
             return []
@@ -54,6 +95,16 @@ class JSONStorage:
             raise Exception(f"Error al leer la base de datos JSON: {e}")
 
     def save(self, users: List[User]) -> None:
+        """
+        Saves users to a JSON file.
+
+        Converts User and Room objects into serializable dictionaries
+        and writes them to the specified file. Ensures that the target
+        directory exists before saving.
+
+        Args:
+            users (List[User]): The list of users to be saved.
+        """
         data = []
         for user in users:
             # usamos los métodos getters (llamados)
@@ -78,4 +129,3 @@ class JSONStorage:
         with open(self.filepath, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4, ensure_ascii=False)
 
-"hola mundo"
