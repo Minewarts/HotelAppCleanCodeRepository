@@ -25,11 +25,16 @@ plugins:
         python:
           paths: ["src"]
 
+
+
 nav:
   - Inicio: index.md
-  - Guía de usuario: getting-started.md
-  - Referencia técnica:
-    - API de python: api.md
+  - Inicio Rápido: getting-started.md
+  - Guía de Usuario:
+      - Comandos CLI: commands.md
+      - Persistencia: persistence.md
+  - Arquitectura: architecture.md
+  - Referencia: reference.md
 
 markdown_extensions:
   - admonition
