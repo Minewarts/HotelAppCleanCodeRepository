@@ -526,4 +526,12 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
+# Secret files
+superdupercontraseñasuperdupersecreta.txt
+
+#Api key
+.vscode/*
+!.vscode/superdupercontraseñasuperdupersecreta.txt
+
 # End of https://www.toptal.com/developers/gitignore/api/python,vs
+
