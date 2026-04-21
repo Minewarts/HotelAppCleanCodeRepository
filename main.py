@@ -5,7 +5,7 @@ from rich.table import Table
 
 from src.HotelApp.exceptions import AppError
 from src.HotelApp.models import User, Room
-from src.HotelApp.services import UserService, HotelService
+from src.HotelApp.services import UserServices, HotelService
 from src.HotelApp.storage import JSONStorage
 
 app = typer.Typer(help="HOT TEL - Sistema de Gestión de Reservas CLI")
@@ -13,7 +13,7 @@ console = Console()
 
 # Inicialización
 storage = JSONStorage(Path("data/database.json"))
-user_service = UserService(storage)
+user_service = UserServices(storage)
 hotel_service = HotelService(storage)
 
 

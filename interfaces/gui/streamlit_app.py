@@ -1,9 +1,9 @@
 import streamlit as st
-from HotelApp.services import UserService
+from HotelApp.services import UserServices
 from HotelApp.storage import JSONStorage
 
 storage = JSONStorage("data/database.json")
-service = UserService(storage)
+service = UserServices(storage)
 
 st.title("User Manager")
 

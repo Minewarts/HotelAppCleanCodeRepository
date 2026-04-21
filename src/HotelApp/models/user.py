@@ -1,0 +1,104 @@
+from __future__ import annotations
+from typing import List
+from ..exceptions import InvalidUserDataError
+
+
+class User:
+    """
+    Represents a user in the system.
+
+    Attributes:
+        _id (int): Unique identifier of the user.
+        _name (str): Name of the user.
+        _email (str): Email address of the user.
+        history (List[Room]): List containing the history of rooms associated with the user.
+    """
+
+    def __init__(self, user_id: int, name: str, email: str):
+        """
+        Initializes a new User instance.
+
+        Args:
+            user_id (int): Unique positive identifier for the user.
+            name (str): Name of the user.
+            email (str): Email address of the user.
+
+        Raises:
+            InvalidUserDataError: If the user ID is not positive or the email is invalid.
+        """
+        self._validate_id(user_id)
+        self._validate_email(email)
+
+        self._id = user_id
+        self._name = name
+        self._email = email
+        self.history: List[Room] = []
+        
+
+    def get_id(self):
+        """
+        Returns the user's ID.
+
+        Returns:
+            int: The unique identifier of the user.
+        """
+        return self._id
+
+    def get_name(self):
+        """
+        Returns the user's name.
+
+        Returns:
+            str: The name of the user.
+        """
+        return self._name
+
+    def get_email(self):
+        """
+        Returns the user's email address.
+
+        Returns:
+            str: The email address of the user.
+        """
+        return self._email
+
+    def set_email(self, new_email):
+        """
+        Updates the user's email address after validation.
+
+        Args:
+            new_email (str): The new email address to assign.
+
+        Raises:
+            InvalidUserDataError: If the provided email is invalid.
+        """
+        self._validate_email(new_email)
+        self._email = new_email
+
+    def _validate_id(self, user_id):
+        """
+        Validates that the user ID is a positive integer.
+
+        Args:
+            user_id (int): The ID to validate.
+
+        Raises:
+            InvalidUserDataError: If the ID is less than or equal to zero.
+        """
+        if user_id <= 0:
+            raise InvalidUserDataError("User id must be positive")
+
+    def _validate_email(self, user_email):
+        """
+        Validates the basic format of an email address.
+
+        Args:
+            user_email (str): The email address to validate.
+
+        Raises:
+            InvalidUserDataError: If the email is empty or does not contain '@'.
+        """
+        if "@" not in user_email or not user_email.strip():
+            raise InvalidUserDataError("Invalid Email")
+
+clas
