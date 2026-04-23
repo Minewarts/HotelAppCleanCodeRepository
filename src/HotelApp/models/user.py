@@ -11,7 +11,7 @@ class User:
         _id (int): Unique identifier of the user.
         _name (str): Name of the user.
         _email (str): Email address of the user.
-        history (UserHistory): Object managing the history of rooms associated with the user.
+        history (List[UserHistory]): List of stay records for the user.
     """
 
     def __init__(self, user_id: int, name: str, email: str):
@@ -32,7 +32,7 @@ class User:
         self._id = user_id
         self._name = name
         self._email = email
-        self.history = UserHistory()
+        self.history: List[UserHistory] = []
 
     def get_id(self) -> int:
         """

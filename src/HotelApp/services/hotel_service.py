@@ -1,4 +1,4 @@
-from ..models import User, Room
+from ..models import User, Room, UserHistory
 from ..storage import Storage
 from ..exceptions import UserNotFoundError
 
@@ -28,8 +28,8 @@ class HotelService:
         Reserves a room for a given user.
 
         The method checks if the room is available. If it is available,
-        the room status is changed to "occupied" and it is added to the
-        user's history if it is not already present. The changes are then
+        the room status is changed to "occupied" and a new UserHistory
+        is created and added to the user's history. The changes are then
         persisted in the storage system.
 
         Args:
@@ -40,17 +40,16 @@ class HotelService:
             Exception: If the room is not available.
             UserNotFoundError: If the user does not exist in storage.
         """
-        # Verificamos disponibilidad via hjpta 😊
+        # Verificamos disponibilidad
         if room.get_status() != "available":
             raise Exception("Room is not available")
 
         # ocupamos la habitación y añadimos al historial del usuario
         room.set_status("occupied")
-        # evitar duplicados
-        if room not in user.history:
-            user.history.append(room)
+        user_history = UserHistory(user, room)
+        user.history.append(user_history)
 
-        # si quieres persistir cambios en storage, debes cargar usuarios, actualizar y guardar.
+        # persistir cambios en storage
         users = self.storage.load()
         for u in users:
             if u.get_id() == user.get_id():
@@ -66,9 +65,8 @@ class HotelService:
         """
         Cancels a room reservation for a given user.
 
-        The method verifies that the room exists in the user's history.
-        If it does, the room status is changed to "available" and the room
-        is removed from the user's reservation history. The changes are
+        The method finds the active UserHistory for the room and checks out.
+        The room status is changed to "available". The changes are
         then saved in the storage system.
 
         Args:
@@ -79,13 +77,19 @@ class HotelService:
             Exception: If the room is not reserved by the user.
             UserNotFoundError: If the user does not exist in storage.
         """
-        # comprobar que la habitación está en el historial del usuario
-        if room not in user.history:
+        # encontrar el UserHistory activo para esta habitación
+        active_history = None
+        for history in user.history:
+            if history.get_room() == room and history.is_active():
+                active_history = history
+                break
+
+        if not active_history:
             raise Exception("Room is not reserved by the user")
 
-        # liberar habitación y quitar del historial
+        # check out y liberar habitación
+        active_history.check_out()
         room.set_status("available")
-        user.history.remove(room)
 
         # persistir cambios
         users = self.storage.load()
@@ -115,7 +119,7 @@ class HotelService:
         """
         Retrieves information about a room reserved by a user.
 
-        If the room exists in the user's reservation history, the method
+        If the room exists in the user's active reservation history, the method
         returns a dictionary containing details about the room and the
         user who holds the reservation.
 
@@ -127,11 +131,12 @@ class HotelService:
             dict | None: A dictionary with the room information if the
             user has reserved it, or None otherwise.
         """
-        if room in user.history:
-            return {
-                "room_holder": user.get_name(),
-                "room_number": room.get_room_number(),
-                "room_type": room.get_room_type(),
-                "status": room.get_status(),
-            }
+        for history in user.history:
+            if history.get_room() == room and history.is_active():
+                return {
+                    "room_holder": user.get_name(),
+                    "room_number": room.get_room_number(),
+                    "room_type": room.get_room_type(),
+                    "status": room.get_status(),
+                }
         return None

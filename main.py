@@ -1,6 +1,5 @@
 import os
 from dotenv import load_dotenv
-from supabase import create_client, Client
 from pathlib import Path
 import typer
 from rich.console import Console
@@ -14,59 +13,6 @@ from HotelApp.storage import JSONStorage
 
 #Cargar las variables del .env
 load_dotenv()
-supabase_url: str = os.getenv("SUPABASE_URL")
-supabase_key: str = os.getenv("SUPABASE_KEY")
-
-# Crear cliente de Supabase
-supabase: Client = create_client(supabase_url, supabase_key)
-
-def poblar_base_de_datos():
-    print("Iniciando carga de datos (Modelo simplificado sin tabla Hotel)...")
-
-    # 1. INSERTAR 10 HABITACIONES (Rooms)
-    habitaciones_data = []
-    tipos = ["Sencilla", "Doble", "Suite", "Estándar"]
-    for i in range(1, 11):
-        habitaciones_data.append({
-            "room_number": 100 + i,
-            "room_type": tipos[i % 4],
-            "status": True
-        })
-    
-    supabase.table('Rooms').upsert(habitaciones_data).execute()
-    print("✅ 10 Habitaciones creadas.")
-
-    # 2. INSERTAR 10 USUARIOS (Users)
-    nombres = [
-        "Cristian Escobar", "Alice Smith", "Juan Perez", "Maria Lopez", 
-        "Carlos Restrepo", "Ana Gomez", "Luis Zuluaga", "Elena Cano", 
-        "Diego Ruiz", "Paula Rios"
-    ]
-    
-    usuarios_data = []
-    for nombre in nombres:
-        usuarios_data.append({
-            "name": nombre,
-            "email": f"{nombre.lower().replace(' ', '.')}@mail.com"
-        })
-    
-    res_users = supabase.table('Users').upsert(usuarios_data).execute()
-    user_ids = [u['id'] for u in res_users.data]
-    print("✅ 10 Usuarios registrados.")
-
-    # 3. INSERTAR 10 REGISTROS EN EL HISTORIAL (User_history)
-    historial_data = []
-    for i in range(10):
-        historial_data.append({
-            "user_id": user_ids[i],
-            "room_number": 101 + i,
-            "check_in": "2026-04-22 14:00:00"
-        })
-    
-    supabase.table('User_history').upsert(historial_data).execute()
-    print("✅ 10 Registros de historial generados vinculando Usuarios y Habitaciones.")
-
-    print("\n🚀 ¡Base de datos poblada exitosamente!")
 
 app = typer.Typer(help="HOT TEL - Sistema de Gestión de Reservas CLI")
 console = Console()
@@ -150,16 +96,17 @@ def cancel_booking(user_id: int, room_number: int):
     try:
         user = user_service.get_user(user_id)
 
-        # Buscar habitación en historial del usuario
-        room = next(
-            (r for r in user.history if r.get_room_number() == room_number),
-            None
-        )
+        # Buscar habitación en historial del usuario (activa)
+        active_history = None
+        for history in user.history:
+            if history.get_room().get_room_number() == room_number and history.is_active():
+                active_history = history
+                break
 
-        if not room:
-            raise Exception("Room not found in user's reservations")
+        if not active_history:
+            raise Exception("Room not found in user's active reservations")
 
-        hotel_service.cancel_reservation(user, room)
+        hotel_service.cancel_reservation(user, active_history.get_room())
 
         console.print(
             f"[yellow] Reserva de la habitación {room_number} cancelada.[/yellow]"
