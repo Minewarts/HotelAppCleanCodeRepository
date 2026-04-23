@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import MagicMock
-from src.HotelApp.services import UserService, HotelService
+from src.HotelApp.services import UserServices, HotelService
 from src.HotelApp.models import User
 from src.HotelApp.models import Room
 
@@ -9,7 +9,7 @@ class TestUserService:
 
     def test_create_user_calls_storage(self):
         fake_storage = MagicMock()
-        service = UserService(fake_storage)
+        service = UserServices(fake_storage)
 
         service.create_user("1", "Juan", "juan@gmail.com")
 
@@ -20,7 +20,7 @@ class TestUserService:
         fake_user = User("1", "Juan", "juan@gmail.com")
         fake_storage.get_user_by_id.return_value = fake_user
 
-        service = UserService(fake_storage)
+        service = UserServices(fake_storage)
 
         result = service.get_user_by_id("1")
 
@@ -29,7 +29,7 @@ class TestUserService:
 
     def test_create_user_invalid_email(self):
         fake_storage = MagicMock()
-        service = UserService(fake_storage)
+        service = UserServices(fake_storage)
 
         with pytest.raises(ValueError):
             service.create_user("1", "Juan", "correo_invalido")

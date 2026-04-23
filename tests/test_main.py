@@ -3,7 +3,7 @@ from typer.testing import CliRunner
 
 from main import app
 from src.HotelApp.storage import JSONStorage
-from src.HotelApp.services import UserService, HotelService
+from src.HotelApp.services import UserServices, HotelService
 
 runner = CliRunner()
 
@@ -17,7 +17,7 @@ class TestCLI:
         """
 
         temp_storage = JSONStorage(tmp_path / "test_db.json")
-        user_service = UserService(temp_storage)
+        user_service = UserServices(temp_storage)
         hotel_service = HotelService(temp_storage)
 
         monkeypatch.setattr("main.storage", temp_storage)

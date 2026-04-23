@@ -1,46 +1,40 @@
-============================================================
-       _    _  ____  _______     _______ ______ _      
-      | |  | |/ __ \|__   __|   |__   __|  ____| |     
-      | |__| | |  | |  | |         | |  | |__  | |     
-      |  __  | |  | |  | |         | |  |  __| | |               
-      | |  | | |__| |  | |         | |  | |____| |____           
-      |_|  |_|\____/   |_|         |_|  |______|______|          
-                                                                  
-             SISTEMA DE GESTIÓN DE RESERVAS v1.0               
-============================================================
-      Integrantes                                           -
--Sanet Correa Castaño                                       -
--Cristian Escobar Taborda                                   -
--Nicolas Peña ibarguen                                      -
-------------------------------------------------------------
-      Descripcion                                           -
-Aplicacion desarrollada como entregable para el proyecto de -
-Codigo Limpio, El proyecto ha sido desarrollado bajo los es -
-tándares de Código Limpio y Arquitectura de Capas, priorizan-
-do la legibilidad, el desacoplamiento de componentes y la fa-
-cilidad de mantenimiento.                                   -
-------------------------------------------------------------
-      Objetivos                                             -
-Implementar las buenas practicas y conocimientos que vayamos-
-viendo a lo largo de las clases de codigo limpio, mejorando -
-la legibilidad, el mantenimiento y la presentacion del codi -
-go y asi creando codigo mas profesional para el entorno la  -
-boral                                                       -
-------------------------------------------------------------
-      Funciones                                             -
-1. Gestión de Huéspedes                                     -
-- Registro de Usuarios                                      -
-- Consulta de Perfiles                                      -
-- Bajas de Usuario                                          -
-                                                            -
-2. Gestión de Habitaciones                                  -
-- Control de Disponibilidad                                 -
-- Búsqueda Especializada                                    -
-                                                            -
-3. Sistema de Reservas                                      -
-- Creación de Reservas                                      -
-- Cancelación de Reservas                                   -
-- Historial de Estancia                                     -
-------------------------------------------------------------
+# HOTTEL
+## SISTEMA DE GESTIÓN DE RESERVAS 
 
+---
+
+### 👥 Integrantes
+- Sanet Correa Castaño
+- Cristian Escobar Taborda
+- Nicolas Peña Ibarguen
+
+---
+
+### 📝 Descripción
+Aplicación desarrollada como entregable para el proyecto de **Código Limpio**. El proyecto ha sido desarrollado bajo los estándares de **Clean Code** y **Arquitectura de Capas**, priorizando la legibilidad, el desacoplamiento de componentes y la facilidad de mantenimiento.
+
+---
+
+### 🎯 Objetivos
+Implementar las buenas prácticas y conocimientos vistos a lo largo de las clases de código limpio, mejorando la legibilidad, el mantenimiento y la presentación del código para crear un producto profesional orientado al entorno laboral.
+
+---
+
+### 🚀 Funciones
+
+#### 1. Gestión de Huéspedes
+* **Registro de Usuarios:** Alta de nuevos clientes.
+* **Consulta de Perfiles:** Visualización de información.
+* **Bajas de Usuario:** Gestión de retiro de usuarios.
+
+#### 2. Gestión de Habitaciones
+* **Control de Disponibilidad:** Monitoreo en tiempo real.
+* **Búsqueda Especializada:** Filtros avanzados.
+
+#### 3. Sistema de Reservas
+* **Creación de Reservas:** Flujo de registro de estancia.
+* **Cancelación de Reservas:** Gestión de anulaciones.
+* **Historial de Estancia:** Registro detallado de visitas.
+
+---
 
