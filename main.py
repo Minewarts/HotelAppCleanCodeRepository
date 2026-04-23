@@ -9,10 +9,62 @@ from HotelApp.exceptions import AppError
 from HotelApp.models import User, Room
 from HotelApp.services import UserServices, HotelService
 from HotelApp.storage import JSONStorage
+import os
+from supabase import create_client, Client
 
+load_dotenv() # Carga las variables del archivo .env
 
-#Cargar las variables del .env
-load_dotenv()
+url = os.environ.get("SUPABASE_URL")
+key = os.environ.get("SUPABASE_KEY")
+# Inicializar el cliente
+supabase: Client = create_client(url, key)
+def poblar_base_de_datos():
+    print("Iniciando carga de datos (Modelo simplificado sin tabla Hotel)...")
+
+    # 1. INSERTAR 10 HABITACIONES (Rooms)
+    habitaciones_data = []
+    tipos = ["Sencilla", "Doble", "Suite", "Estándar"]
+    for i in range(1, 11):
+        habitaciones_data.append({
+            "room_number": 100 + i,
+            "room_type": tipos[i % 4],
+            "status": True
+        })
+    
+    supabase.table('Rooms').upsert(habitaciones_data).execute()
+    print("✅ 10 Habitaciones creadas.")
+
+    # 2. INSERTAR 10 USUARIOS (Users)
+    nombres = [
+        "Cripetas", "Pepito el Mago", "Juan Perez", "Maria Lopez", 
+        "Carlos Restrepo", "Ana Gomez", "Luis Zuluaga", "Elena Cano", 
+        "Diego Ruiz", "Paula Rios"
+    ]
+    
+    usuarios_data = []
+    for nombre in nombres:
+        usuarios_data.append({
+            "name": nombre,
+            "email": f"{nombre.lower().replace(' ', '.')}@mail.com"
+        })
+    
+    res_users = supabase.table('Users').upsert(usuarios_data).execute()
+    user_ids = [u['id'] for u in res_users.data]
+    print("✅ 10 Usuarios registrados.")
+
+    # 3. INSERTAR 10 REGISTROS EN EL HISTORIAL (User_history)
+    historial_data = []
+    for i in range(10):
+        historial_data.append({
+            "user_id": user_ids[i],
+            "room_number": 101 + i,
+            "check_in": "2026-04-22 14:00:00"
+        })
+    
+    supabase.table('User_history').upsert(historial_data).execute()
+    print("✅ 10 Registros de historial generados vinculando Usuarios y Habitaciones.")
+
+    print("¡Base de datos llenita!")
 
 app = typer.Typer(help="HOT TEL - Sistema de Gestión de Reservas CLI")
 console = Console()
@@ -121,4 +173,4 @@ if __name__ == "__main__":
     try:
         poblar_base_de_datos()
     except Exception as e:
-        print(f"Hubo un error: {e}")
+        print(f"Error al poblar los datos: {e}")
