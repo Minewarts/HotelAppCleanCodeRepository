@@ -1,3 +1,32 @@
+import os
+from dotenv import load_dotenv
+from supabase import create_client, Client
+
+#Cargar las variables del .env
+load_dotenv()
+supabase_url: str = os.getenv("SUPABASE_URL")
+supabase_key: str = os.getenv("SUPABASE_KEY")
+
+# Crear cliente de Supabase
+supabase: Client = create_client(supabase_url, supabase_key)
+
+def consultar_datos():
+    """Leer datos de la tabla 'users' en Supabase."""
+    
+    response = supabase.table('users').select('*').execute()
+    print("Datos de la tabla 'users':", response.data)
+
+def insertar_datos():
+    """Insertar un nuevo registro en la tabla 'users'."""
+    
+    new_user = {
+        "name": "Crispex",
+        "email": "crispex@example.com"
+    }
+
+    response = supabase.table('users').insert([new_user]).execute()
+    print("Usuario insertado:", response.data)
+
 from pathlib import Path
 import typer
 from rich.console import Console
