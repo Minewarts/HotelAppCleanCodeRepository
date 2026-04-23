@@ -2,8 +2,8 @@ import pytest
 from typer.testing import CliRunner
 
 from main import app
-from src.HotelApp.storage import JSONStorage
-from src.HotelApp.services import UserServices, HotelService
+from HotelApp.storage import JSONStorage
+from HotelApp.services import UserServices, HotelService
 
 runner = CliRunner()
 

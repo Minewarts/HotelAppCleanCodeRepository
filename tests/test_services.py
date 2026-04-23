@@ -1,8 +1,8 @@
 import pytest
 from unittest.mock import MagicMock
-from src.HotelApp.services import UserServices, HotelService
-from src.HotelApp.models import User
-from src.HotelApp.models import Room
+from HotelApp.services import UserServices, HotelService
+from HotelApp.models import User
+from HotelApp.models import Room
 
 
 class TestUserService:

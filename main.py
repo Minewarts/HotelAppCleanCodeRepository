@@ -1,6 +1,16 @@
 import os
 from dotenv import load_dotenv
 from supabase import create_client, Client
+from pathlib import Path
+import typer
+from rich.console import Console
+from rich.table import Table
+
+from HotelApp.exceptions import AppError
+from HotelApp.models import User, Room
+from HotelApp.services import UserServices, HotelService
+from HotelApp.storage import JSONStorage
+
 
 #Cargar las variables del .env
 load_dotenv()
@@ -10,32 +20,53 @@ supabase_key: str = os.getenv("SUPABASE_KEY")
 # Crear cliente de Supabase
 supabase: Client = create_client(supabase_url, supabase_key)
 
-def consultar_datos():
-    """Leer datos de la tabla 'users' en Supabase."""
+def poblar_base_de_datos():
+    print("Iniciando carga de datos (Modelo simplificado sin tabla Hotel)...")
+
+    # 1. INSERTAR 10 HABITACIONES (Rooms)
+    habitaciones_data = []
+    tipos = ["Sencilla", "Doble", "Suite", "Estándar"]
+    for i in range(1, 11):
+        habitaciones_data.append({
+            "room_number": 100 + i,
+            "room_type": tipos[i % 4],
+            "status": True
+        })
     
-    response = supabase.table('users').select('*').execute()
-    print("Datos de la tabla 'users':", response.data)
+    supabase.table('Rooms').upsert(habitaciones_data).execute()
+    print("✅ 10 Habitaciones creadas.")
 
-def insertar_datos():
-    """Insertar un nuevo registro en la tabla 'users'."""
+    # 2. INSERTAR 10 USUARIOS (Users)
+    nombres = [
+        "Cristian Escobar", "Alice Smith", "Juan Perez", "Maria Lopez", 
+        "Carlos Restrepo", "Ana Gomez", "Luis Zuluaga", "Elena Cano", 
+        "Diego Ruiz", "Paula Rios"
+    ]
     
-    new_user = {
-        "name": "Crispex",
-        "email": "crispex@example.com"
-    }
+    usuarios_data = []
+    for nombre in nombres:
+        usuarios_data.append({
+            "name": nombre,
+            "email": f"{nombre.lower().replace(' ', '.')}@mail.com"
+        })
+    
+    res_users = supabase.table('Users').upsert(usuarios_data).execute()
+    user_ids = [u['id'] for u in res_users.data]
+    print("✅ 10 Usuarios registrados.")
 
-    response = supabase.table('users').insert([new_user]).execute()
-    print("Usuario insertado:", response.data)
+    # 3. INSERTAR 10 REGISTROS EN EL HISTORIAL (User_history)
+    historial_data = []
+    for i in range(10):
+        historial_data.append({
+            "user_id": user_ids[i],
+            "room_number": 101 + i,
+            "check_in": "2026-04-22 14:00:00"
+        })
+    
+    supabase.table('User_history').upsert(historial_data).execute()
+    print("✅ 10 Registros de historial generados vinculando Usuarios y Habitaciones.")
 
-from pathlib import Path
-import typer
-from rich.console import Console
-from rich.table import Table
-
-from src.HotelApp.exceptions import AppError
-from src.HotelApp.models import User, Room
-from src.HotelApp.services import UserServices, HotelService
-from src.HotelApp.storage import JSONStorage
+    print("\n🚀 ¡Base de datos poblada exitosamente!")
 
 app = typer.Typer(help="HOT TEL - Sistema de Gestión de Reservas CLI")
 console = Console()
@@ -140,3 +171,7 @@ def cancel_booking(user_id: int, room_number: int):
 
 if __name__ == "__main__":
     app()
+    try:
+        poblar_base_de_datos()
+    except Exception as e:
+        print(f"Hubo un error: {e}")

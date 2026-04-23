@@ -2,8 +2,8 @@ import pytest
 import json
 from pathlib import Path
 
-from src.HotelApp.models import User, Room
-from src.HotelApp.storage import JSONStorage
+from HotelApp.models import User, Room
+from HotelApp.storage import JSONStorage
 
 
 class TestJSONStorage:

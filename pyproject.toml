@@ -15,3 +15,6 @@ dependencies = [
     "supabase>=2.28.3",
     "typer>=0.24.1",
 ]
+
+[tool.setuptools.packages.find]
+where = ["src"]

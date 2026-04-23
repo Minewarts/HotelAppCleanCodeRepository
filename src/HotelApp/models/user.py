@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import List
 from ..exceptions import InvalidUserDataError
-
+from .user_history import UserHistory
 
 class User:
     """
@@ -11,7 +11,7 @@ class User:
         _id (int): Unique identifier of the user.
         _name (str): Name of the user.
         _email (str): Email address of the user.
-        history (List[Room]): List containing the history of rooms associated with the user.
+        history (UserHistory): Object managing the history of rooms associated with the user.
     """
 
     def __init__(self, user_id: int, name: str, email: str):
@@ -32,10 +32,9 @@ class User:
         self._id = user_id
         self._name = name
         self._email = email
-        self.history: List[Room] = []
-        
+        self.history = UserHistory()
 
-    def get_id(self):
+    def get_id(self) -> int:
         """
         Returns the user's ID.
 
@@ -44,7 +43,7 @@ class User:
         """
         return self._id
 
-    def get_name(self):
+    def get_name(self) -> str:
         """
         Returns the user's name.
 
@@ -53,7 +52,7 @@ class User:
         """
         return self._name
 
-    def get_email(self):
+    def get_email(self) -> str:
         """
         Returns the user's email address.
 
@@ -62,20 +61,7 @@ class User:
         """
         return self._email
 
-    def set_email(self, new_email):
-        """
-        Updates the user's email address after validation.
-
-        Args:
-            new_email (str): The new email address to assign.
-
-        Raises:
-            InvalidUserDataError: If the provided email is invalid.
-        """
-        self._validate_email(new_email)
-        self._email = new_email
-
-    def _validate_id(self, user_id):
+    def _validate_id(self, user_id: int):
         """
         Validates that the user ID is a positive integer.
 
@@ -88,7 +74,7 @@ class User:
         if user_id <= 0:
             raise InvalidUserDataError("User id must be positive")
 
-    def _validate_email(self, user_email):
+    def _validate_email(self, user_email: str):
         """
         Validates the basic format of an email address.
 
@@ -100,5 +86,3 @@ class User:
         """
         if "@" not in user_email or not user_email.strip():
             raise InvalidUserDataError("Invalid Email")
-
-clas

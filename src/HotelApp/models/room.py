@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import List
-from .exceptions import InvalidUserDataError
+from ..exceptions import InvalidUserDataError
 
 
 class Room:

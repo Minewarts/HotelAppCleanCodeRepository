@@ -3,24 +3,24 @@
 
 ---
 
-### 👥 Integrantes
+### Integrantes
 - Sanet Correa Castaño
 - Cristian Escobar Taborda
 - Nicolas Peña Ibarguen
 
 ---
 
-### 📝 Descripción
+### Descripción
 Aplicación desarrollada como entregable para el proyecto de **Código Limpio**. El proyecto ha sido desarrollado bajo los estándares de **Clean Code** y **Arquitectura de Capas**, priorizando la legibilidad, el desacoplamiento de componentes y la facilidad de mantenimiento.
 
 ---
 
-### 🎯 Objetivos
+### Objetivos
 Implementar las buenas prácticas y conocimientos vistos a lo largo de las clases de código limpio, mejorando la legibilidad, el mantenimiento y la presentación del código para crear un producto profesional orientado al entorno laboral.
 
 ---
 
-### 🚀 Funciones
+### Funciones
 
 #### 1. Gestión de Huéspedes
 * **Registro de Usuarios:** Alta de nuevos clientes.
