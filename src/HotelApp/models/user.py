@@ -1,7 +1,9 @@
 from __future__ import annotations
-from typing import List
+from typing import List, TYPE_CHECKING
 from ..exceptions import InvalidUserDataError
-from .user_history import UserHistory
+
+if TYPE_CHECKING:
+    from .user_history import UserHistory
 
 class User:
     """

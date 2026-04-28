@@ -1,43 +1,95 @@
-# Guía de Inicio Rápido (Getting Started)
+# 🚀 Guía de Inicio Rápido
 
-Sigue estos pasos para configurar el entorno de desarrollo y ejecutar la aplicación del hotel.
+Sigue estos pasos para configurar el proyecto y ejecutar la aplicación.
 
 ## 📋 Requisitos Previos
+
 Asegúrate de tener instalado:
-* Python 3.10 o superior.
-* Git.
+- **Python 3.10+**
+- **Git**
+- **pip** (gestor de paquetes de Python)
 
 ## ⚙️ Instalación
 
-1. **Clonar el repositorio:**
-   
-   git clone [https://github.com/Minewarts/HotelAppCleanCodeRepository.git](https://github.com/Minewarts/HotelAppCleanCodeRepository.git)
-   cd HotelAppCleanCodeRepository
+### 1. Clonar el repositorio
 
+```bash
+git clone https://github.com/Minewarts/HotelAppCleanCodeRepository.git
+cd HotelAppCleanCodeRepository
+```
 
-2.**Crear el entorno virtual :** 
-    
-    python -m venv venv
+### 2. Crear un entorno virtual
 
-## En Windows:
+```bash
+# En Windows:
+python -m venv venv
+.\venv\Scripts\activate
 
-    .\venv\Scripts\activate
+# En Linux/Mac:
+python3 -m venv venv
+source venv/bin/activate
+```
 
-## En Linux/Mac:
+### 3. Instalar dependencias
 
-    source venv/bin/activate
+```bash
+pip install -r requirements.txt
+```
 
+## 🎮 Primeros Pasos
 
-3. **Instalar dependencias:**
-    
-    pip install -r requirements.txt
+### Ver comandos disponibles
 
+```bash
+python main.py --help
+```
 
-🎮 Primeros Pasos
-Una vez sincronizado, puedes interactuar con la aplicación inmediatamente. Prueba el comando de ayuda para ver las opciones disponibles:
-    uv run main.py --help
+### Crear un usuario
 
+```bash
+python main.py create-user --id 1 --name "Juan Pérez" --email "juan@example.com"
+```
 
-### 3. Archivo: `docs/user-guide/commands.md`
-**Ruta:** `HotelAppCleanCodeRepository/docs/user-guide/commands.md`
+### Listar usuarios
 
+```bash
+python main.py list-users
+```
+
+### Realizar una reserva
+
+```bash
+python main.py book --user-id 1 --room-number 101 --room-type "Suite"
+```
+
+## 🧪 Ejecutar Tests
+
+```bash
+pytest tests/
+```
+
+## 📖 Documentación
+
+- [Comandos disponibles](commands.md)
+- [API Reference](api.md)
+- [Arquitectura](architecture.md)
+- [Persistencia de Datos](persistence.md)
+
+## 🐛 Solución de Problemas
+
+### Error: `ModuleNotFoundError: No module named 'HotelApp'`
+**Solución:** Asegúrate de estar en la carpeta raíz del proyecto y que el entorno virtual esté activado.
+
+### Error: `No such file or directory: 'data/database.json'`
+**Solución:** Crea la carpeta `data/`:
+```bash
+mkdir data
+```
+
+## ✅ Verificación de Instalación
+
+Para verificar que todo está correctamente instalado:
+
+```bash
+python -c "from src.HotelApp.models import User; print('✓ Importación exitosa')"
+```
