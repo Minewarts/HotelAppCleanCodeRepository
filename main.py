@@ -9,7 +9,7 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from src.HotelApp.exceptions import AppError
+from HotelApp.core.exceptions import AppError
 from src.HotelApp.models import User, Room
 from src.HotelApp.services import UserServices, HotelService
 from src.HotelApp.storage import JSONStorage
@@ -119,7 +119,7 @@ from supabase import create_client, Client
 from fastapi import FastAPI, HTTPException
 from schema import ProductResponse
 
-from HotelApp.exceptions import AppError
+from HotelApp.core.exceptions import AppError
 from HotelApp.models import User, Room
 from HotelApp.services import UserServices, HotelService
 from HotelApp.storage import JSONStorage

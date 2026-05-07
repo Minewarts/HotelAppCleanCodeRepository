@@ -2,7 +2,7 @@ from typing import List
 
 from ..models import User, Room
 from ..storage import Storage
-from ..exceptions import (
+from ..core.exceptions import (
     UserNotFoundError,
     UserAlreadyExistsError,
     InvalidUserDataError,

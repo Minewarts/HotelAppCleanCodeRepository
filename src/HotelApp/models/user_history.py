@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Optional
 from .user import User
 from .room import Room
-from ..exceptions import InvalidUserDataError
+from ..core.exceptions import InvalidUserDataError
 
 
 class UserHistory:

@@ -1,6 +1,6 @@
 import pytest
 from HotelApp.models import User, Room, Hotel
-from HotelApp.exceptions import InvalidUserDataError
+from HotelApp.core.exceptions import InvalidUserDataError
 
 
 class TestUser:

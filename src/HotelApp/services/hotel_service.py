@@ -1,6 +1,6 @@
 from ..models import User, Room, UserHistory
 from ..storage import Storage
-from ..exceptions import UserNotFoundError
+from ..core.exceptions import UserNotFoundError
 
 
 class HotelService:
