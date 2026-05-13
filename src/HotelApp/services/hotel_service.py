@@ -1,53 +1,77 @@
-from ..models import User, Room, UserHistory
+from ..models import User, Room, UserHistory, Hotel
 from ..storage import Storage
-from ..core.exceptions import UserNotFoundError
+from ..core.exceptions import UserNotFoundError, InvalidUserDataError
 
 
 class HotelService:
     """
-    The class HotelService is the responsable to : 
-    - Reserve a room 
-    - Cancel a pending reservation 
-    - Check the disponibility of a room 
-    - Show the room user history ( you can look the status and the tenant . ) 
+    Service responsible for hotel operations:
+    - Record user actions (check-in, reservations, cancellations).
+    - Log events in user history.
+    - Manage room availability.
     """
-    
+
     def __init__(self, storage: Storage):
         """
-        Initializes the reservation manager with a storage system.
+        Initializes the hotel service with a storage system.
 
         Args:
-            storage (Storage): Object responsible for loading and saving
-            user information and their reservations.
+            storage (Storage): Object responsible for persisting user information.
         """
         self.storage = storage
 
-
-    def reserve_room(self, user: User, room: Room) -> None:
+    def log_user_action(
+        self, user_id: int, action: str, description: str | None = None
+    ) -> UserHistory:
         """
-        Reserves a room for a given user.
-
-        The method checks if the room is available. If it is available,
-        the room status is changed to "occupied" and a new UserHistory
-        is created and added to the user's history. The changes are then
-        persisted in the storage system.
+        Records an action in a user's history.
 
         Args:
-            user (User): The user who wants to reserve the room.
-            room (Room): The room to be reserved.
+            user_id (int): The ID of the user.
+            action (str): Description of the action (e.g., "Check-in", "Reservation").
+            description (str | None): Additional details about the action.
+
+        Returns:
+            UserHistory: The created history record.
 
         Raises:
-            Exception: If the room is not available.
-            UserNotFoundError: If the user does not exist in storage.
+            UserNotFoundError: If the user does not exist.
         """
-        # Verificamos disponibilidad
-        if room.get_status() != "available":
-            raise Exception("Room is not available")
+        users = self.storage.load()
+        user = None
+        for u in users:
+            if u.get_id() == user_id:
+                user = u
+                break
 
-        # ocupamos la habitación y añadimos al historial del usuario
-        room.set_status("occupied")
-        user_history = UserHistory(user, room)
-        user.history.append(user_history)
+        if user is None:
+            raise UserNotFoundError(f"User {user_id} not found")
+
+        history = UserHistory(user_id=user_id, action=action, description=description)
+        user.history.append(history)
+        self.storage.save(users)
+
+        return history
+
+    def get_user_history(self, user_id: int) -> list[UserHistory]:
+        """
+        Retrieves all history records for a user.
+
+        Args:
+            user_id (int): The ID of the user.
+
+        Returns:
+            list[UserHistory]: List of history records.
+
+        Raises:
+            UserNotFoundError: If the user does not exist.
+        """
+        users = self.storage.load()
+        for user in users:
+            if user.get_id() == user_id:
+                return user.history
+
+        raise UserNotFoundError(f"User {user_id} not found")
 
         # persistir cambios en storage
         users = self.storage.load()

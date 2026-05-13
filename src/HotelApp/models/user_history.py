@@ -1,119 +1,87 @@
 from __future__ import annotations
 from datetime import datetime
 from typing import Optional
-from .user import User
-from .room import Room
 from ..core.exceptions import InvalidUserDataError
 
 
 class UserHistory:
     """
-    Represents a stay record linking a user to a room.
+    Represents an action or event record for a user.
 
     Attributes:
-        _user (User): The user associated with this stay.
-        _room (Room): The room occupied during this stay.
-        _check_in (datetime): Timestamp when the user checked in.
-        _check_out (Optional[datetime]): Timestamp when the user checked out, or None if ongoing.
+        _id (int): Unique identifier for this history record.
+        _user_id (int): ID of the user associated with this action.
+        _action (str): Description of the action performed.
+        _description (Optional[str]): Additional details about the action.
+        _timestamp (datetime): When the action occurred.
     """
 
-    def __init__(self, user: User, room: Room, check_in: Optional[datetime] = None):
+    def __init__(
+        self,
+        user_id: int,
+        action: str,
+        description: Optional[str] = None,
+        timestamp: Optional[datetime] = None,
+    ):
         """
         Initializes a new UserHistory instance.
 
         Args:
-            user (User): The user checking in.
-            room (Room): The room being occupied.
-            check_in (Optional[datetime]): Check-in time. Defaults to current time.
+            user_id (int): ID of the user.
+            action (str): Description of the action.
+            description (Optional[str]): Additional details.
+            timestamp (Optional[datetime]): When it happened. Defaults to now.
 
         Raises:
-            InvalidUserDataError: If the room is not available or arguments are invalid.
+            InvalidUserDataError: If the user_id is not positive or action is empty.
         """
-        self._validate_user(user)
-        self._validate_room(room)
+        self._validate_user_id(user_id)
+        self._validate_action(action)
 
-        self._user = user
-        self._room = room
-        self._check_in = check_in or datetime.now()
-        self._check_out: Optional[datetime] = None
+        self._user_id = user_id
+        self._action = action
+        self._description = description
+        self._timestamp = timestamp or datetime.now()
 
-    
+    def get_user_id(self) -> int:
+        """Returns the associated user ID."""
+        return self._user_id
 
-    def get_user(self) -> User:
-        """Returns the user associated with this stay."""
-        return self._user
+    def get_action(self) -> str:
+        """Returns the action description."""
+        return self._action
 
-    def get_room(self) -> Room:
-        """Returns the room associated with this stay."""
-        return self._room
+    def get_description(self) -> Optional[str]:
+        """Returns additional details about the action."""
+        return self._description
 
-    def get_check_in(self) -> datetime:
-        """Returns the check-in timestamp."""
-        return self._check_in
+    def get_timestamp(self) -> datetime:
+        """Returns when the action occurred."""
+        return self._timestamp
 
-    def get_check_out(self) -> Optional[datetime]:
-        """Returns the check-out timestamp, or None if the stay is ongoing."""
-        return self._check_out
-
-    def is_active(self) -> bool:
+    def _validate_user_id(self, user_id: int) -> None:
         """
-        Indicates whether the stay is currently ongoing.
-
-        Returns:
-            bool: True if the user has not checked out yet.
-        """
-        return self._check_out is None
-
-    
-
-    def check_out(self, check_out_time: Optional[datetime] = None) -> None:
-        """
-        Registers the user's check-out and marks the room as available.
-
-        Args:
-            check_out_time (Optional[datetime]): Check-out time. Defaults to current time.
+        Validates that the user_id is positive.
 
         Raises:
-            InvalidUserDataError: If the stay is already closed.
+            InvalidUserDataError: If user_id is not positive.
         """
-        if not self.is_active():
-            raise InvalidUserDataError("This stay is already closed.")
+        if user_id <= 0:
+            raise InvalidUserDataError("User ID must be positive.")
 
-        self._check_out = check_out_time or datetime.now()
-        self._room.set_status("available")
-
-
-
-    def _validate_user(self, user: User) -> None:
+    def _validate_action(self, action: str) -> None:
         """
-        Validates that the user argument is a User instance.
+        Validates that the action is not empty.
 
         Raises:
-            InvalidUserDataError: If user is not a User instance.
+            InvalidUserDataError: If action is empty.
         """
-        if not isinstance(user, User):
-            raise InvalidUserDataError("A valid User instance is required.")
-
-    def _validate_room(self, room: Room) -> None:
-        """
-        Validates that the room is a Room instance and is currently available.
-
-        Raises:
-            InvalidUserDataError: If room is not a Room instance or is already occupied.
-        """
-        if not isinstance(room, Room):
-            raise InvalidUserDataError("A valid Room instance is required.")
-        if room.get_status() != "available":
-            raise InvalidUserDataError(
-                f"Room {room.get_room_number()} is not available."
-            )
-
-   
+        if not action or not action.strip():
+            raise InvalidUserDataError("Action cannot be empty.")
 
     def __repr__(self) -> str:
-        status = "active" if self.is_active() else "closed"
         return (
-            f"UserHistory(user={self._user.get_name()!r}, "
-            f"room={self._room.get_room_number()}, "
-            f"status={status!r})"
+            f"UserHistory(user_id={self._user_id}, "
+            f"action={self._action!r}, "
+            f"timestamp={self._timestamp!r})"
         )

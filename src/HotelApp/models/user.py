@@ -11,18 +11,20 @@ class User:
 
     Attributes:
         _id (int): Unique identifier of the user.
-        _name (str): Name of the user.
+        _first_name (str): First name of the user.
+        _last_name (str): Last name of the user.
         _email (str): Email address of the user.
         history (List[UserHistory]): List of stay records for the user.
     """
 
-    def __init__(self, user_id: int, name: str, email: str):
+    def __init__(self, user_id: int, first_name: str, last_name: str, email: str):
         """
         Initializes a new User instance.
 
         Args:
             user_id (int): Unique positive identifier for the user.
-            name (str): Name of the user.
+            first_name (str): First name of the user.
+            last_name (str): Last name of the user.
             email (str): Email address of the user.
 
         Raises:
@@ -32,7 +34,8 @@ class User:
         self._validate_email(email)
 
         self._id = user_id
-        self._name = name
+        self._first_name = first_name
+        self._last_name = last_name
         self._email = email
         self.history: List[UserHistory] = []
 
@@ -45,14 +48,23 @@ class User:
         """
         return self._id
 
-    def get_name(self) -> str:
+    def get_first_name(self) -> str:
         """
-        Returns the user's name.
+        Returns the user's first name.
 
         Returns:
-            str: The name of the user.
+            str: The first name of the user.
         """
-        return self._name
+        return self._first_name
+
+    def get_last_name(self) -> str:
+        """
+        Returns the user's last name.
+
+        Returns:
+            str: The last name of the user.
+        """
+        return self._last_name
 
     def get_email(self) -> str:
         """

@@ -1,5 +1,6 @@
 from __future__ import annotations
-from typing import List
+from decimal import Decimal
+from typing import Literal
 from ..core.exceptions import InvalidUserDataError
 
 
@@ -8,37 +9,40 @@ class Room:
     Represents a room in the system.
 
     Attributes:
-        _room_number (int): Unique number identifying the room.
+        _number_id (str): Unique identifier for the room (e.g., "101", "Suite A").
         _room_type (str): Type or category of the room.
-        _status (str): Current status of the room (available or occupied).
+        _price_per_night (Decimal): Price per night in currency units.
+        _status (str): Current status of the room (Disponible, Ocupada, Mantenimiento).
     """
 
-    def __init__(self, room_number: int, room_type: str):
+    def __init__(self, number_id: str, room_type: str, price_per_night: Decimal):
         """
         Initializes a new Room instance.
 
         Args:
-            room_number (int): Unique positive number identifying the room.
+            number_id (str): Unique identifier for the room.
             room_type (str): Type or category of the room.
+            price_per_night (Decimal): Price per night (must be positive).
 
         Raises:
-            ValueError: If the room number is not positive.
+            ValueError: If the price_per_night is not positive.
         """
-        self._validate_room_number(room_number)
-        self._room_number = room_number
+        self._validate_price(price_per_night)
+        self._number_id = number_id
         self._room_type = room_type
-        self._status = "available"
+        self._price_per_night = price_per_night
+        self._status: Literal["Disponible", "Ocupada", "Mantenimiento"] = "Disponible"
 
-    def get_room_number(self):
+    def get_number_id(self) -> str:
         """
-        Returns the room number.
+        Returns the room identifier.
 
         Returns:
-            int: The room number.
+            str: The room number or identifier.
         """
-        return self._room_number
+        return self._number_id
 
-    def get_room_type(self):
+    def get_room_type(self) -> str:
         """
         Returns the type of the room.
 
@@ -47,16 +51,25 @@ class Room:
         """
         return self._room_type
 
-    def get_status(self):
+    def get_price_per_night(self) -> Decimal:
+        """
+        Returns the price per night.
+
+        Returns:
+            Decimal: The price per night.
+        """
+        return self._price_per_night
+
+    def get_status(self) -> str:
         """
         Returns the current status of the room.
 
         Returns:
-            str: The room status ("available" or "occupied").
+            str: The room status (Disponible, Ocupada, Mantenimiento).
         """
         return self._status
 
-    def set_status(self, status: str):
+    def set_status(self, status: Literal["Disponible", "Ocupada", "Mantenimiento"]):
         """
         Updates the status of the room.
 
@@ -64,22 +77,22 @@ class Room:
             status (str): New status for the room.
 
         Raises:
-            ValueError: If the status is not "available" or "occupied".
+            ValueError: If the status is not valid.
         """
-        if status not in ("available", "occupied"):
-            raise ValueError("status must be 'available' or 'occupied'")
+        if status not in ("Disponible", "Ocupada", "Mantenimiento"):
+            raise ValueError("status must be 'Disponible', 'Ocupada' or 'Mantenimiento'")
         self._status = status
 
-    def _validate_room_number(self, room_number):
+    def _validate_price(self, price_per_night: Decimal):
         """
-        Validates that the room number is a positive integer.
+        Validates that the price is positive.
 
         Args:
-            room_number (int): The room number to validate.
+            price_per_night (Decimal): The price to validate.
 
         Raises:
-            ValueError: If the room number is less than or equal to zero.
+            ValueError: If the price is not positive.
         """
-        if room_number <= 0:
-            raise ValueError("Room number must be positive")
+        if price_per_night <= 0:
+            raise ValueError("Price per night must be positive")
 

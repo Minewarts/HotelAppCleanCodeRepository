@@ -11,25 +11,28 @@ class Hotel:
 
     Attributes:
         _name (str): Name of the hotel.
-        _stars (int | None): Star rating of the hotel.
+        _address (str): Physical address of the hotel.
+        _phone (str): Contact phone number.
         _rooms (List[Room]): List of rooms available in the hotel.
         _clients (List[User]): List of registered clients.
     """
 
-    def __init__(self, name: str, stars: int | None = None):
+    def __init__(self, name: str, address: str, phone: str):
         """
         Initializes a new Hotel instance.
 
         Args:
             name (str): Name of the hotel.
-            stars (int | None): Optional star rating of the hotel.
+            address (str): Physical address of the hotel.
+            phone (str): Contact phone number.
         """
         self._name = name
-        self._stars = stars
+        self._address = address
+        self._phone = phone
         self._rooms: List[Room] = []
         self._clients: List[User] = []
 
-    def get_name(self):
+    def get_name(self) -> str:
         """
         Returns the name of the hotel.
 
@@ -38,16 +41,37 @@ class Hotel:
         """
         return self._name
 
-    def get_stars(self):
+    def set_name(self, name: str) -> None:
+        """Sets the hotel name."""
+        self._name = name
+
+    def get_address(self) -> str:
         """
-        Returns the star rating of the hotel.
+        Returns the address of the hotel.
 
         Returns:
-            int | None: The number of stars or None if not defined.
+            str: The hotel address.
         """
-        return self._stars
+        return self._address
 
-    def add_room(self, room: Room):
+    def set_address(self, address: str) -> None:
+        """Sets the hotel address."""
+        self._address = address
+
+    def get_phone(self) -> str:
+        """
+        Returns the phone number of the hotel.
+
+        Returns:
+            str: The hotel phone.
+        """
+        return self._phone
+
+    def set_phone(self, phone: str) -> None:
+        """Sets the hotel phone number."""
+        self._phone = phone
+
+    def add_room(self, room: Room) -> None:
         """
         Adds a new room to the hotel.
 
@@ -57,11 +81,11 @@ class Hotel:
         Raises:
             ValueError: If a room with the same number already exists.
         """
-        if self.get_room_by_number(room.get_room_number()) is not None:
+        if self.get_room_by_number(room.get_number_id()) is not None:
             raise ValueError("Room already exists")
         self._rooms.append(room)
 
-    def add_client(self, client: User):
+    def add_client(self, client: User) -> None:
         """
         Adds a new client to the hotel.
 
@@ -75,7 +99,7 @@ class Hotel:
             raise ValueError("Client already exists")
         self._clients.append(client)
 
-    def get_client_by_id(self, client_id):
+    def get_client_by_id(self, client_id: int) -> User | None:
         """
         Searches for a client by their ID.
 
@@ -90,22 +114,22 @@ class Hotel:
                 return client
         return None
 
-    def get_room_by_number(self, room_number):
+    def get_room_by_number(self, room_number: str) -> Room | None:
         """
         Searches for a room by its number.
 
         Args:
-            room_number (int): Number of the room.
+            room_number (str): Number of the room.
 
         Returns:
             Room | None: The room if found, otherwise None.
         """
         for room in self._rooms:
-            if room.get_room_number() == room_number:
+            if room.get_number_id() == room_number:
                 return room
         return None
 
-    def get_room_by_type(self, room_type):
+    def get_room_by_type(self, room_type: str) -> Room | None:
         """
         Searches for a room by its type.
 
@@ -119,3 +143,11 @@ class Hotel:
             if room.get_room_type() == room_type:
                 return room
         return None
+
+    def get_all_rooms(self) -> List[Room]:
+        """Returns all rooms in the hotel."""
+        return self._rooms
+
+    def get_all_clients(self) -> List[User]:
+        """Returns all registered clients."""
+        return self._clients
