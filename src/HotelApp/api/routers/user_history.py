@@ -8,13 +8,12 @@ from typing import List
 from ...models import UserHistory
 from ...schemas import UserHistoryCreate, UserHistoryResponse
 from ...services import HotelService
-from ...storage import JSONStorage
-from pathlib import Path
+from ...storage import get_default_storage
 
 router = APIRouter(prefix="/user-history", tags=["user-history"])
 
 # Initialize storage and service (in production, use dependency injection)
-storage = JSONStorage(Path("data/database.json"))
+storage = get_default_storage()
 hotel_service = HotelService(storage)
 
 

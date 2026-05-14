@@ -12,6 +12,7 @@ Ejemplo de uso::
     client = create_client(settings.supabase_url, settings.supabase_key)
 """
 
+from typing import Optional
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -25,8 +26,9 @@ class Settings(BaseSettings):
     )
 
     # ── Supabase ──────────────────────────────────────────────────────────────
-    supabase_url: str
-    supabase_key: str
+    supabase_url: Optional[str] = None
+    supabase_key: Optional[str] = None
+    use_supabase: bool = False
 
     # ── FastAPI ───────────────────────────────────────────────────────────────
     api_base_url: str = "http://localhost:8000"
