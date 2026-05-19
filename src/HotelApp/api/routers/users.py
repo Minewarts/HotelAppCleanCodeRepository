@@ -1,69 +1,60 @@
 """
 API routes for user management.
+
+All data is persisted in Supabase. The router delegates
+raw DB access to SupabaseStorage.
 """
 
-from fastapi import APIRouter, HTTPException, status
 from typing import List
 
-from ...models import User
+from fastapi import APIRouter, HTTPException, status
+
 from ...schemas import UserCreate, UserResponse, UserUpdate
-from ...services import UserServices
-from ...storage import get_default_storage
+from ...storage.supabase_storage import SupabaseStorage
 
 router = APIRouter(prefix="/users", tags=["users"])
 
-# Initialize storage and service (in production, use dependency injection)
-storage = get_default_storage()
-user_service = UserServices(storage)
+storage = SupabaseStorage()
 
 
 @router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 def create_user(user_data: UserCreate):
     """Create a new user."""
     try:
-        user = User(
-            user_id=len(storage.load()) + 1,
-            first_name=user_data.first_name,
-            last_name=user_data.last_name,
-            email=user_data.email,
-        )
-        user_service.create_user(user)
-        return user
+        result = storage.create_user(user_data.model_dump())
+        return result
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
 @router.get("/", response_model=List[UserResponse])
 def list_users():
-    """Get all users."""
+    """Get all registered users."""
     try:
-        users = storage.load()
-        return users
+        return storage.get_all_users()
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
+        )
 
 
 @router.get("/{user_id}", response_model=UserResponse)
 def get_user(user_id: int):
     """Get a user by ID."""
-    try:
-        user = user_service.get_user(user_id)
-        return user
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+    user = storage.get_user_by_id(user_id)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"User {user_id} not found"
+        )
+    return user
 
 
 @router.patch("/{user_id}", response_model=UserResponse)
 def update_user(user_id: int, user_data: UserUpdate):
-    """Update a user."""
+    """Partially update a user (only provided fields are changed)."""
     try:
-        updated_user = user_service.update_user(
-            user_id,
-            first_name=user_data.first_name,
-            last_name=user_data.last_name,
-            email=user_data.email,
-        )
-        return updated_user
+        payload = user_data.model_dump(exclude_none=True)
+        return storage.update_user(user_id, payload)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
@@ -72,6 +63,6 @@ def update_user(user_id: int, user_data: UserUpdate):
 def delete_user(user_id: int):
     """Delete a user."""
     try:
-        user_service.delete_user(user_id)
+        storage.delete_user(user_id)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))

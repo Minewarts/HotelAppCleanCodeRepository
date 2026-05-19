@@ -1,36 +1,29 @@
 """
 API routes for room management.
+
+All data is persisted in Supabase via SupabaseStorage.
 """
 
-from fastapi import APIRouter, HTTPException, status
 from typing import List
-from decimal import Decimal
 
-from ...models import Room
+from fastapi import APIRouter, HTTPException, status
+
 from ...schemas import RoomCreate, RoomResponse, RoomUpdate
-from ...storage import JSONStorage
-from pathlib import Path
+from ...storage.supabase_storage import SupabaseStorage
 
 router = APIRouter(prefix="/rooms", tags=["rooms"])
 
-# Initialize storage (in production, use dependency injection)
-storage = JSONStorage(Path("data/database.json"))
-
-# In-memory room storage (replace with database in production)
-_rooms: List[Room] = []
+storage = SupabaseStorage()
 
 
 @router.post("/", response_model=RoomResponse, status_code=status.HTTP_201_CREATED)
 def create_room(room_data: RoomCreate):
     """Create a new room."""
     try:
-        room = Room(
-            number_id=room_data.number_id,
-            room_type=room_data.room_type,
-            price_per_night=room_data.price_per_night,
-        )
-        _rooms.append(room)
-        return room
+        payload = room_data.model_dump()
+        payload["price_per_night"] = float(payload["price_per_night"])
+        result = storage.create_room(payload)
+        return result
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
@@ -38,43 +31,41 @@ def create_room(room_data: RoomCreate):
 @router.get("/", response_model=List[RoomResponse])
 def list_rooms():
     """Get all rooms."""
-    return _rooms
+    try:
+        return storage.get_all_rooms()
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
+        )
 
 
 @router.get("/{room_id}", response_model=RoomResponse)
 def get_room(room_id: str):
-    """Get a room by ID."""
-    for room in _rooms:
-        if room.get_number_id() == room_id:
-            return room
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Room not found")
+    """Get a room by its number_id."""
+    room = storage.get_room_by_id(room_id)
+    if not room:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"Room '{room_id}' not found"
+        )
+    return room
 
 
 @router.patch("/{room_id}", response_model=RoomResponse)
 def update_room(room_id: str, room_data: RoomUpdate):
-    """Update a room."""
-    for room in _rooms:
-        if room.get_number_id() == room_id:
-            try:
-                if room_data.number_id is not None:
-                    room._number_id = room_data.number_id
-                if room_data.room_type is not None:
-                    room._room_type = room_data.room_type
-                if room_data.price_per_night is not None:
-                    room._price_per_night = room_data.price_per_night
-                if room_data.status is not None:
-                    room.set_status(room_data.status)
-                return room
-            except Exception as e:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Room not found")
+    """Partially update a room (only provided fields are changed)."""
+    try:
+        payload = room_data.model_dump(exclude_none=True)
+        if "price_per_night" in payload:
+            payload["price_per_night"] = float(payload["price_per_night"])
+        return storage.update_room(room_id, payload)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
 @router.delete("/{room_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_room(room_id: str):
     """Delete a room."""
-    for i, room in enumerate(_rooms):
-        if room.get_number_id() == room_id:
-            _rooms.pop(i)
-            return
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Room not found")
+    try:
+        storage.delete_room(room_id)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
