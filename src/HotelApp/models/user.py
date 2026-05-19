@@ -75,7 +75,7 @@ class User:
         """
         return self._email
 
-    def _validate_id(self, user_id: int):
+    def _validate_id(self, user_id: int) -> None:
         """
         Validates that the user ID is a positive integer.
 
@@ -88,7 +88,7 @@ class User:
         if user_id <= 0:
             raise InvalidUserDataError("User id must be positive")
 
-    def _validate_email(self, user_email: str):
+    def _validate_email(self, user_email: str) -> None:
         """
         Validates the basic format of an email address.
 

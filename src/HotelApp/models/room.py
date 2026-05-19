@@ -83,7 +83,7 @@ class Room:
             raise ValueError("status must be 'Disponible', 'Ocupada' or 'Mantenimiento'")
         self._status = status
 
-    def _validate_price(self, price_per_night: Decimal):
+    def _validate_price(self, price_per_night: Decimal) -> None:
         """
         Validates that the price is positive.
 
