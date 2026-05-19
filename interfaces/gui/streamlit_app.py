@@ -2,17 +2,13 @@
 User Manager GUI Application
 
 This module provides a Streamlit-based graphical user interface for managing users in the HotelApp system.
-It allows creating, listing, and deleting users through an interactive web interface.
+It connects to the FastAPI backend through HTTP requests.
 """
 
 import streamlit as st
-from HotelApp.services import UserServices
-from HotelApp.storage import JSONStorage
-from HotelApp.models import User
-from HotelApp.core.exceptions import InvalidUserDataError, UserAlreadyExistsError, UserNotFoundError
+import requests
 
-storage = JSONStorage("data/database.json")
-service = UserServices(storage)
+API_URL = "http://localhost:8000"
 
 st.title("User Manager")
 
@@ -20,28 +16,40 @@ tab1, tab2, tab3 = st.tabs(["Create User", "List Users", "Delete User"])
 
 with tab1:
     st.header("Create a new user")
-    name = st.text_input("Name", key="create_name")
+    first_name = st.text_input("First Name", key="create_first_name")
+    last_name = st.text_input("Last Name", key="create_last_name")
     email = st.text_input("Email", key="create_email")
 
     if st.button("Create user"):
         try:
-            users = storage.load()
-            max_id = max((u.get_id() for u in users), default=0)
-            new_id = max_id + 1
-            user = User(new_id, name, email)
-            service.create_user(user)
-            st.success(f"User created with id {user.get_id()}")
-        except (InvalidUserDataError, UserAlreadyExistsError) as e:
-            st.error(str(e))
+            response = requests.post(f"{API_URL}/users/", json={
+                "first_name": first_name,
+                "last_name": last_name,
+                "email": email
+            })
+            if response.status_code == 201:
+                user = response.json()
+                st.success(f"User created with ID {user['id']}")
+            else:
+                st.error(response.json().get("detail", "Error creating user"))
+        except requests.exceptions.ConnectionError:
+            st.error("Could not connect to the API. Make sure it is running.")
 
 with tab2:
     st.header("List of users")
-    users = storage.load()
-    if users:
-        for user in users:
-            st.write(f"ID: {user.get_id()}, Name: {user.get_name()}, Email: {user.get_email()}")
-    else:
-        st.write("No users found.")
+    try:
+        response = requests.get(f"{API_URL}/users/")
+        if response.status_code == 200:
+            users = response.json()
+            if users:
+                for user in users:
+                    st.write(f"ID: {user['id']} | Name: {user['first_name']} {user['last_name']} | Email: {user['email']}")
+            else:
+                st.write("No users found.")
+        else:
+            st.error("Error fetching users.")
+    except requests.exceptions.ConnectionError:
+        st.error("Could not connect to the API. Make sure it is running.")
 
 with tab3:
     st.header("Delete a user")
@@ -49,8 +57,12 @@ with tab3:
 
     if st.button("Delete user"):
         try:
-            service.delete_user(int(user_id))
-            st.success(f"User with id {user_id} deleted.")
-        except UserNotFoundError as e:
-            st.error(str(e))
-
+            response = requests.delete(f"{API_URL}/users/{int(user_id)}")
+            if response.status_code == 204:
+                st.success(f"User with ID {user_id} deleted.")
+            elif response.status_code == 404:
+                st.error(f"User with ID {user_id} not found.")
+            else:
+                st.error("Error deleting user.")
+        except requests.exceptions.ConnectionError:
+            st.error("Could not connect to the API. Make sure it is running.")
