@@ -7,7 +7,8 @@ Reglas de negocio validadas aqui:
 """
 
 from pydantic import BaseModel, EmailStr, Field, model_validator
-from typing import Optional, Any
+from typing import Optional
+
 
 class UserBase(BaseModel):
     """Campos comunes a todas las representaciones de User."""
@@ -31,7 +32,6 @@ class UserBase(BaseModel):
         description="Correo electronico unico del usuario.",
         examples=["cristian@ejemplo.com"],
     )
-    history: Optional[Any] = None
 
 
 class UserCreate(UserBase):

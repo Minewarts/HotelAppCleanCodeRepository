@@ -12,7 +12,7 @@ Centraliza toda comunicacion entre la interfaz (ej. Streamlit o CLI Typer) y el 
 
 Patron de uso:
 
-    from src.app.api_client import ApiClient
+    from HotelApp.app.api_client import ApiClient
 
     client = ApiClient()
     users, err = client.get("/users/")
@@ -24,7 +24,7 @@ Patron de uso:
 
 import httpx
 
-from src.core.config import settings
+from ..core.config import settings
 
 # Timeout en segundos para todas las peticiones al backend.
 _TIMEOUT = 10.0

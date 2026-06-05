@@ -5,18 +5,12 @@
 ```
 src/HotelApp/
 ├── __init__.py
-├── exceptions/        # Excepciones personalizadas
-├── models/           # Entidades del dominio
-│   ├── __init__.py
-│   ├── hotel.py
-│   ├── room.py
-│   ├── user.py
-│   └── user_history.py
-├── services/         # Lógica de aplicación
-│   ├── __init__.py
-│   ├── hotel_service.py
-│   └── user_services.py
-└── storage/          # Persistencia de datos
+├── api/               # FastAPI app and routers
+├── app/               # CLI application (Typer)
+├── exceptions.py      # Excepciones personalizadas
+├── models.py          # Entidades del dominio (User, Room, Hotel, ...)
+├── services.py        # Lógica de aplicación (UserService, HotelService)
+└── storage/           # Persistencia de datos
     ├── __init__.py
     ├── json_storage.py
     └── storage_protocol.py
@@ -32,9 +26,9 @@ from src.HotelApp.models import User
 user = User(user_id=1, name="Juan", email="juan@example.com")
 
 # Getters
-user.get_id()      → int
-user.get_name()    → str
-user.get_email()   → str
+user.get_id()      -> int
+user.get_name()    -> str
+user.get_email()   -> str
 ```
 
 ### Room
@@ -45,28 +39,14 @@ from src.HotelApp.models import Room
 room = Room(room_number=101, room_type="Suite")
 
 # Getters
-room.get_room_number()  → int
-room.get_room_type()    → str
-room.get_status()       → str
-room.set_status(status: str) → None
+room.get_room_number()  -> int
+room.get_room_type()    -> str
+room.get_status()       -> str
+room.set_status(status: str) -> None
 ```
 
 ### UserHistory
-```python
-from src.HotelApp.models import UserHistory
-from datetime import datetime
-
-# Creación
-history = UserHistory(user, room)
-
-# Métodos
-history.get_user()         → User
-history.get_room()         → Room
-history.get_check_in()     → datetime
-history.get_check_out()    → Optional[datetime]
-history.is_active()        → bool
-history.check_out()        → None
-```
+En esta implementación el historial se maneja como registros asociados a usuarios; ver `src/HotelApp/schemas` y `api/routers/user_history.py` para los modelos y endpoints.
 
 ### Hotel
 ```python
@@ -76,26 +56,27 @@ from src.HotelApp.models import Hotel
 hotel = Hotel(name="Gran Hotel", stars=5)
 
 # Métodos
-hotel.add_room(room: Room) → None
-hotel.add_client(user: User) → None
-hotel.get_room_by_number(num: int) → Optional[Room]
-hotel.get_client_by_id(id: int) → Optional[User]
+hotel.add_room(room: Room) -> None
+hotel.add_client(user: User) -> None
+hotel.get_room_by_number(num: int) -> Optional[Room]
+hotel.get_client_by_id(id: int) -> Optional[User]
 ```
 
 ## Servicios
 
-### UserServices
+### `UserService`
 ```python
-from src.HotelApp.services import UserServices
+from src.HotelApp.services import UserService
 from src.HotelApp.storage import JSONStorage
 from pathlib import Path
 
 storage = JSONStorage(Path("data/database.json"))
-service = UserServices(storage)
+service = UserService(storage)
 
 # Métodos
-service.create_user(user: User) → None
-service.get_user(user_id: int) → User
+service.create_user(user_or_id, name=None, email=None) -> None
+service.get_user(user_id: int) -> User
+service.get_user_by_id(user_id) -> User
 ```
 
 ### HotelService
@@ -103,8 +84,11 @@ service.get_user(user_id: int) → User
 from src.HotelApp.services import HotelService
 
 # Métodos
-service.reserve_room(user: User, room: Room) → None
-service.cancel_reservation(user: User, room: Room) → None
+service.reserve_room(user: User, room: Room) -> None
+service.cancel_reservation(user: User, room: Room) -> None
+service.add_room(room_number, room_type) -> None
+service.get_room(room_number) -> Room | None
+service.book_room(room_number) -> Room
 ```
 
 ## Excepciones

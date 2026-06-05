@@ -6,6 +6,7 @@ Reglas de negocio validadas aqui:
 """
 
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
@@ -20,13 +21,11 @@ class UserHistoryBase(BaseModel):
     room_id: str | None = Field(
         default=None,
         min_length=1,
-        description="ID de la habitación asociada a la acción.",
+        description="ID de la habitacion asociada a la accion.",
         examples=["101"],
     )
-    action: str = Field(
+    action: Literal["Check-in", "Check-out", "Reserva", "Cancelacion de reserva"] = Field(
         ...,
-        min_length=2,
-        max_length=100,
         description="Accion realizada por o para el cliente.",
         examples=["Check-in", "Cancelacion de reserva"],
     )
@@ -34,6 +33,14 @@ class UserHistoryBase(BaseModel):
         default=None,
         max_length=500,
         description="Detalles adicionales de la accion.",
+    )
+    check_in_date: datetime | None = Field(
+        default=None,
+        description="Fecha y hora del check-in.",
+    )
+    check_out_date: datetime | None = Field(
+        default=None,
+        description="Fecha y hora del check-out.",
     )
 
 

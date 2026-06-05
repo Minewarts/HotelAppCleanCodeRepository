@@ -9,7 +9,7 @@ La interfaz de línea de comandos permite gestionar el hotel de forma rápida y 
 Registra un nuevo huésped en el sistema.
 
 ```bash
-python main.py create-user --id 1 --name "Juan Pérez" --email "juan@example.com"
+python -m src.HotelApp.app.main create-user --id 1 --name "Juan Pérez" --email "juan@example.com"
 ```
 
 **Parámetros:**
@@ -27,7 +27,7 @@ python main.py create-user --id 1 --name "Juan Pérez" --email "juan@example.com
 Muestra una tabla con todos los huéspedes registrados.
 
 ```bash
-python main.py list-users
+python -m src.HotelApp.app.main list-users
 ```
 
 **Salida esperada:**
@@ -46,7 +46,7 @@ python main.py list-users
 Crea una reserva de una habitación para un usuario.
 
 ```bash
-python main.py book --user-id 1 --room-number 101 --room-type "Suite"
+python -m src.HotelApp.app.main book --user-id 1 --room-number 101 --room-type "Suite"
 ```
 
 **Parámetros:**
@@ -64,7 +64,7 @@ python main.py book --user-id 1 --room-number 101 --room-type "Suite"
 Cancela una reserva existente de un usuario.
 
 ```bash
-python main.py cancel --user-id 1 --room-number 101
+python -m src.HotelApp.app.main cancel --user-id 1 --room-number 101
 ```
 
 **Parámetros:**

@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from ..core.config import settings
-from .routers import users_router, rooms_router, user_history_router, hotel_router
+from .routers import users_router, rooms_router, user_history_router, hotel_router , reservations_router 
 
 # Create FastAPI app
 app = FastAPI(
@@ -29,7 +29,7 @@ app.include_router(users_router)
 app.include_router(rooms_router)
 app.include_router(user_history_router)
 app.include_router(hotel_router)
-
+app.include_router(reservations_router)
 
 @app.get("/")
 def read_root():

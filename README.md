@@ -54,9 +54,16 @@ USE_SUPABASE=true
 
 **4. Inicia la API**
 ```bash
-uvicorn src.HotelApp.api.main:app --reload
+uvicorn src.HotelApp.api.main:app --reload o 
+python -m uvicorn src.HotelApp.api.main:app --reload
 ```
 
+
+
+**5. Inicia El streamlit**
+```bash
+    python -m streamlit run interfaces/gui/streamlit_app.py
+```
 **5. Accede a la documentación**
 
 | Interfaz | URL |

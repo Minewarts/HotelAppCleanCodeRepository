@@ -1,0 +1,14 @@
+site_name: HotelApp Clean Code Repository
+docs_dir: docs
+site_dir: site_temp
+theme:
+  name: material
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+plugins:
+  - search

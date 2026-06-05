@@ -3,26 +3,26 @@
 En este proyecto, la persistencia se encarga de que los datos de tu hotel (habitaciones y reservas) no se borren al cerrar la terminal.
 
 ## 📂 Archivo de Almacenamiento (JSON)
-La aplicación utiliza un archivo de texto en formato **JSON** (generalmente llamado `hotel_data.json`). Elegimos este formato porque es ligero, fácil de leer y permite ver los datos guardados sin necesidad de herramientas complejas.
+La aplicación utiliza un archivo JSON por defecto en `data/database.json`, gestionado por la clase `JSONStorage` en `src/HotelApp/storage.py`.
 
 ### Estructura de los Datos
-Los modelos de Python se guardan siguiendo una estructura de objetos. Así es como se ve el archivo por dentro:
+Internamente `JSONStorage` serializa una lista de usuarios. Cada usuario tiene la forma:
 
 ```json
-{
-  "rooms": [
-    {
-      "number": 101,
-      "type": "Suite",
-      "price": 150.0,
-      "is_available": true
-    }
-  ],
-  "bookings": [
-    {
-      "id": "res-001",
-      "room_number": 101,
-      "guest_name": "Juan Perez"
-    }
-  ]
-}
+[
+  {
+    "id": 1,
+    "name": "Juan Perez",
+    "email": "juan@example.com",
+    "history": [
+      {
+        "room_number": 101,
+        "room_type": "Suite",
+        "status": "occupied"
+      }
+    ]
+  }
+]
+```
+
+Si necesitas un esquema distinto para integraciones, implementa un adaptador en la capa `storage`.

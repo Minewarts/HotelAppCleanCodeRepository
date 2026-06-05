@@ -14,6 +14,6 @@ El proyecto se organiza siguiendo el esquema de cebolla:
 4. **Frameworks & Drivers:** Herramientas externas como la base de datos o la CLI.
 
 ## 🛠️ Tecnologías Principales
-* **Python 3.10+**
+* **Python 3.12+**
 * **MkDocs** (Documentación)
 * **Pytest** (Pruebas unitarias)

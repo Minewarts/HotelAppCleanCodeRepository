@@ -22,11 +22,11 @@ HotelApp sigue los principios de **Clean Architecture** (Arquitectura Limpia), l
 └─────────────────────────────────────────┘
 ```
 
-### 1. Entities / Models (`src/HotelApp/models/`)
+### 1. Entities / Models (`src/HotelApp/models.py`)
 
 La capa más interna contiene los modelos de dominio que representan las reglas de negocio fundamentales:
 
-- **`User.py`** - Representa un huésped del hotel
+El proyecto usa un único módulo `src/HotelApp/models.py` que contiene `User`, `Room`, `Hotel`, y estructuras relacionadas.
   - Valida IDs positivos
   - Valida formato de email
   - Mantiene historial de estancias
@@ -46,16 +46,16 @@ La capa más interna contiene los modelos de dominio que representan las reglas 
   - Registra check-in y check-out
   - Valida transiciones de estado
 
-### 2. Use Cases / Services (`src/HotelApp/services/`)
+### 2. Use Cases / Services (`src/HotelApp/services.py`)
 
 Define los casos de uso de la aplicación:
 
-- **`UserServices.py`** - Lógica de gestión de usuarios
+El servicio principal de usuarios es `UserService` en `src/HotelApp/services.py`.
   - Crear usuarios con validación
   - Recuperar usuarios
   - Gestionar iteraciones de usuario
 
-- **`HotelService.py`** - Lógica de reservas
+La lógica de reservas está en `HotelService` dentro de `src/HotelApp/services.py`.
   - Reservar habitaciones
   - Cancelar reservas
   - Validar disponibilidad

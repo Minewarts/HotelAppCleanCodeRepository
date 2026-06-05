@@ -19,11 +19,12 @@ theme:
         name: Switch to light mode
 
 plugins:
-  - search:
+  - search
   - mkdocstrings:
       handlers:
         python:
-          paths: ["src"]
+          setup_commands:
+            - "import sys, os; sys.path.insert(0, os.path.abspath('src'))"
 
 
 
@@ -33,6 +34,7 @@ nav:
   - Guía de Usuario:
       - Comandos CLI: commands.md
       - Persistencia: persistence.md
+      - API: api.md
   - Arquitectura: architecture.md
   - Referencia: reference.md
 

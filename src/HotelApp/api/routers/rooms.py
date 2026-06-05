@@ -4,9 +4,9 @@ API routes for room management.
 All data is persisted in Supabase via SupabaseStorage.
 """
 
-from typing import List
+from typing import List, Literal, Optional
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Query, status
 
 from ...schemas import RoomCreate, RoomResponse, RoomUpdate
 from ...storage.supabase_storage import SupabaseStorage
@@ -33,6 +33,27 @@ def list_rooms():
     """Get all rooms."""
     try:
         return storage.get_all_rooms()
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
+        )
+
+
+@router.get("/search", response_model=List[RoomResponse])
+def search_rooms(
+    room_type: Optional[str] = Query(default=None, description="Filter by room type (Sencilla, Doble, Suite)"),
+    status: Optional[str] = Query(default=None, description="Filter by status (Disponible, Ocupada, Mantenimiento)"),
+    min_price: Optional[float] = Query(default=None, description="Minimum price per night"),
+    max_price: Optional[float] = Query(default=None, description="Maximum price per night"),
+):
+    """Search rooms with optional filters by type, status and price range."""
+    try:
+        return storage.filter_rooms(
+            room_type=room_type,
+            status=status,
+            min_price=min_price,
+            max_price=max_price,
+        )
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)

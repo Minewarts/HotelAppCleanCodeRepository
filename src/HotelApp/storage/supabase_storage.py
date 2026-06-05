@@ -1,77 +1,22 @@
 """
 Implementación de storage usando Supabase como base de datos.
-
-Esta clase implementa el protocolo `Storage` y reemplaza a `JSONStorage`
-cuando las variables de entorno de Supabase están configuradas.
-
-Tablas requeridas en Supabase (ver docs/getting-started.md):
-    - users
-    - rooms
-    - user_history
 """
 
-from typing import List
-
+from typing import Literal, Optional
 from supabase import Client
 
 from ..core.supabase_client import get_supabase_client
 from ..core.exceptions import UserNotFoundError
-from ..models import User, UserHistory
 
 
 class SupabaseStorage:
-    """
-    Storage implementation backed by Supabase (PostgreSQL).
-
-    Implements the Storage protocol so it can be used as a drop-in
-    replacement for JSONStorage without changing any service logic.
-    """
 
     def __init__(self) -> None:
-        """Initializes the storage and establishes the Supabase connection."""
         self.client: Client = get_supabase_client()
 
     # ------------------------------------------------------------------ #
     #  Users                                                               #
     # ------------------------------------------------------------------ #
-
-    def load(self) -> List[User]:
-        response = (
-            self.client.table("users")
-            .select("*, user_history(*)")
-            .execute()
-        )
-        users: List[User] = []
-        for row in response.data:
-            user = User(
-                user_id=row["id"],
-                first_name=row["first_name"],
-                last_name=row["last_name"],
-                email=row["email"],
-            )
-            for h in row.get("user_history", []):
-                user.history.append(
-                    UserHistory(
-                        user_id=h["user_id"],
-                        action=h["action"],
-                        description=h.get("description"),
-                        room_id=h.get("room_id"),
-                        timestamp=h.get("timestamp"),
-                    )
-                )
-            users.append(user)
-        return users
-
-    def save(self, users: List[User]) -> None:
-        for user in users:
-            self.client.table("users").upsert(
-                {
-                    "id": user.get_id(),
-                    "first_name": user.get_first_name(),
-                    "last_name": user.get_last_name(),
-                    "email": user.get_email(),
-                }
-            ).execute()
 
     def get_all_users(self) -> list[dict]:
         response = self.client.table("users").select("*").execute()
@@ -113,6 +58,26 @@ class SupabaseStorage:
 
     def get_all_rooms(self) -> list[dict]:
         response = self.client.table("rooms").select("*").execute()
+        return response.data
+
+    def filter_rooms(
+        self,
+        room_type: Optional[str] = None,
+        status: Optional[str] = None,
+        max_price: Optional[float] = None,
+        min_price: Optional[float] = None,
+    ) -> list[dict]:
+        """Filter rooms by type, status and/or price range."""
+        query = self.client.table("rooms").select("*")
+        if room_type:
+            query = query.eq("room_type", room_type)
+        if status:
+            query = query.eq("status", status)
+        if min_price is not None:
+            query = query.gte("price_per_night", min_price)
+        if max_price is not None:
+            query = query.lte("price_per_night", max_price)
+        response = query.execute()
         return response.data
 
     def get_room_by_id(self, room_id: str) -> dict | None:
