@@ -1,5 +1,5 @@
 """
-HOTEL - Sistema de Gestión de Reservas CLI
+HOTTEL - Sistema de Gestión de Reservas CLI
 Aplicación de línea de comandos para gestionar el hotel.
 """
 
@@ -10,7 +10,7 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from src.HotelApp.models import User, UserHistory
+from src.HotelApp.schemas import User, UserHistory
 from src.HotelApp.services import UserServices, HotelService
 from src.HotelApp.storage import JSONStorage
 from src.HotelApp.core.exceptions import AppError

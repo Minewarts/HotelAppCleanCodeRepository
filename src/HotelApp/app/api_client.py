@@ -43,12 +43,8 @@ class ApiClient:
 
     @staticmethod
     def _handle(response: httpx.Response) -> tuple[dict | list | None, str | None]:
-        """Procesa una respuesta HTTP y retorna (data, error).
+        """Procesa una respuesta HTTP y retorna (data, error)."""
 
-        Returns:
-            (data, None)  si la respuesta es exitosa (2xx).
-            (None, error) si la respuesta es un error HTTP o de red.
-        """
         try:
             response.raise_for_status()
             # 204 No Content: exito sin cuerpo.
@@ -103,3 +99,25 @@ class ApiClient:
             return self._handle(r)
         except httpx.RequestError as e:
             return None, f"No se pudo conectar con la API: {e}"
+
+    def get_user_history(self, user_id: int) -> tuple[list[dict] | None, str | None]:
+        """Get the history entries for a given user."""
+        return self.get(f"/user-history/{user_id}")
+
+    def create_user_history(
+        self,
+        user_id: int,
+        action: str,
+        room_id: str | None = None,
+        description: str | None = None,
+    ) -> tuple[dict | None, str | None]:
+        """Create a new user history record linked to a user and optionally a room."""
+        payload: dict = {
+            "user_id": user_id,
+            "action": action,
+        }
+        if room_id is not None:
+            payload["room_id"] = room_id
+        if description is not None:
+            payload["description"] = description
+        return self.post("/user-history/", payload)

@@ -1,8 +1,9 @@
 import json
+from datetime import datetime
 from pathlib import Path
 from typing import List
 
-from ..models import User
+from ..models import User, UserHistory
 
 
 class JSONStorage:
@@ -47,6 +48,19 @@ class JSONStorage:
                     last_name=item["last_name"],
                     email=item["email"],
                 )
+                for h in item.get("history", []):
+                    timestamp_value = h.get("timestamp")
+                    if isinstance(timestamp_value, str):
+                        timestamp_value = datetime.fromisoformat(timestamp_value)
+                    user.history.append(
+                        UserHistory(
+                            user_id=h["user_id"],
+                            action=h["action"],
+                            description=h.get("description"),
+                            room_id=h.get("room_id"),
+                            timestamp=timestamp_value,
+                        )
+                    )
                 users.append(user)
             return users
 
@@ -76,6 +90,7 @@ class JSONStorage:
                         "user_id": h.get_user_id(),
                         "action": h.get_action(),
                         "description": h.get_description(),
+                        "room_id": h.get_room_id(),
                         "timestamp": h.get_timestamp().isoformat(),
                     }
                     for h in user.history

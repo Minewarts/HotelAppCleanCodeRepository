@@ -1,7 +1,7 @@
 import pytest
 from typer.testing import CliRunner
 
-from main import app
+from HotelApp.app.main import app
 from HotelApp.storage import JSONStorage
 from HotelApp.services import UserServices, HotelService
 

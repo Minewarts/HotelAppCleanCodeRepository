@@ -55,6 +55,7 @@ class SupabaseStorage:
                         user_id=h["user_id"],
                         action=h["action"],
                         description=h.get("description"),
+                        room_id=h.get("room_id"),
                         timestamp=h.get("timestamp"),
                     )
                 )

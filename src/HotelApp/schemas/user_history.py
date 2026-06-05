@@ -17,6 +17,12 @@ class UserHistoryBase(BaseModel):
         ...,
         description="ID del usuario asociado a la accion.",
     )
+    room_id: str | None = Field(
+        default=None,
+        min_length=1,
+        description="ID de la habitación asociada a la acción.",
+        examples=["101"],
+    )
     action: str = Field(
         ...,
         min_length=2,

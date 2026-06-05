@@ -12,7 +12,7 @@ API_URL = "http://localhost:8000"
 
 st.title("User Manager")
 
-tab1, tab2, tab3 = st.tabs(["Create User", "List Users", "Delete User"])
+tab1, tab2, tab3, tab4 = st.tabs(["Create User", "List Users", "Delete User", "User History"])
 
 with tab1:
     st.header("Create a new user")
@@ -64,5 +64,31 @@ with tab3:
                 st.error(f"User with ID {user_id} not found.")
             else:
                 st.error("Error deleting user.")
+        except requests.exceptions.ConnectionError:
+            st.error("Could not connect to the API. Make sure it is running.")
+
+with tab4:
+    st.header("Register user room history")
+    history_user_id = st.number_input("User ID", min_value=1, step=1, key="history_user_id")
+    room_id = st.text_input("Room ID", key="history_room_id")
+    action = st.text_input("Action", value="Reservation", key="history_action")
+    description = st.text_area("Description", key="history_description")
+
+    if st.button("Save history entry"):
+        try:
+            payload = {
+                "user_id": int(history_user_id),
+                "action": action,
+            }
+            if room_id.strip():
+                payload["room_id"] = room_id.strip()
+            if description.strip():
+                payload["description"] = description.strip()
+
+            response = requests.post(f"{API_URL}/user-history/", json=payload)
+            if response.status_code == 201:
+                st.success("History record created successfully.")
+            else:
+                st.error(response.json().get("detail", "Error recording history"))
         except requests.exceptions.ConnectionError:
             st.error("Could not connect to the API. Make sure it is running.")

@@ -26,6 +26,15 @@ def create_history(history_data: UserHistoryCreate):
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"User {history_data.user_id} not found",
             )
+
+        if history_data.room_id is not None:
+            room = storage.get_room_by_id(history_data.room_id)
+            if not room:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Room '{history_data.room_id}' not found",
+                )
+
         payload = history_data.model_dump()
         result = storage.create_history(payload)
         return result
