@@ -64,8 +64,8 @@ python -m uvicorn src.HotelApp.api.main:app --reload
 ```bash
     python -m streamlit run interfaces/gui/streamlit_app.py
 ```
-**5. Accede a la documentación**
-
+**6. Accede a la documentación**
+mkdocs serve
 | Interfaz | URL |
 |---|---|
 | Swagger UI | http://localhost:8000/docs |
